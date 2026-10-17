@@ -1,0 +1,120 @@
+# DIG-IN: the masked discrete interpolant, trained by soft cross-entropy onto
+# the target's Gibbs (heat-bath) labels in the data-free fixed-point loop.
+#
+# These are the package defaults.  The paper's settings are passed as
+# overrides by the launchers in experiments/: on the lattices eta=0.1,
+# weighting=tempered, target_ess=0.8 (experiments/lattice.py); on the alloys
+# per-cell tempered weights and a larger buffer (experiments/alloy.py).
+# MDNS and PDNS are this config with labels=hard and eta=1.0.
+name: dig_in
+noise: masked
+loss: ce
+unmask_steps: null      # null = one site per step (exact any-order AR)
+unmask_block: null      # null = the target's own reveal_block (1 on a lattice,
+                        # `dim` for a fluid, i.e. one particle per reveal).
+                        # Set to 1 to force the uniform coordinate order.
+unmask_single: 64       # when unmask_steps < D, reveal the first 64 sites one
+                        # at a time: the factorization error of parallel
+                        # reveals concentrates at high mask fraction, where
+                        # the global mode is still undecided.  At an identical
+                        # 78-call budget on 25x25, 64 singles gave d|m| =
+                        # +0.003 where 0 singles gave -0.441.
+time_input_masked: false
+batch_size: 128
+lr: 3e-4
+weight_decay: 0.0
+grad_clip: 1.0
+ema_decay: 0.995        # ~200-step horizon, matched to the sampler refresh rate
+eta: 1.0
+buffer_capacity: 2048
+n_rollout: 512
+rollout_every: 100      # SGD steps per exploration round.  Exploration costs
+                        # D network calls per endpoint and the labels do not
+                        # depend on t or on the mask, so the round amortizes
+                        # over many cheap inner steps.
+cache_labels: true      # store the label table with the endpoint at push time
+labels: soft            # soft | hard.  soft = the heat-bath conditional of each
+                        # site in the endpoint; hard = the endpoint's own token
+                        # (one-hot), i.e. masked MLE on the model's own draws.
+                        # hard needs no label table, so it spends no
+                        # energy_diff calls.
+curriculum_steps: 0     # >0: amortized targets only -- switch the ordered phase
+curriculum_start: 0.333 # on gradually from the disordered end of the T box over
+                        # this many steps, starting from this fraction of it.
+                        # Order below T_c has to grow a correlation length across
+                        # the lattice; demanding that at every temperature from
+                        # step zero is what the curriculum avoids.
+mode_seed_frac: 0.0
+weighting: none         # none | tempered | tempered_grouped |
+                        # tempered_buffer | tempered_local |
+                        # tempered_regressed (smoothed
+                        # importance weights on the per-endpoint loss; masked
+                        # sampler only)
+target_ess: 0.3         # target ESS fraction of the batch for tempering
+weight_bins: [8, 8]     # tempered_grouped only: the conditioning grid the
+                        # weights are centred within.  An amortized batch
+                        # mixes state points, and across the alloy box log
+                        # nu_hat varies by 260-320 nats where the part the
+                        # weighting is for varies by a few, so plain
+                        # tempering just ranks state points by free energy
+                        # and the ESS rule answers with nu ~ 1/spread.
+                        # Subtracting the per-cell mean leaves the
+                        # within-state-point variation.
+weight_per_cell: false  # self-normalise the tempered weights INSIDE each
+                        # conditioning cell, each cell then carrying the
+                        # share of the batch it holds.  A single global
+                        # softmax gives a cell mass ~ n_c exp(nu^2 sigma_c^2
+                        # / 2), so the regions the model fits worst collect
+                        # more weight for no reason other than their spread:
+                        # a 5% tilt at nu = 0.009, 45% at nu = 0.023, and one
+                        # cell owning the batch by nu = 0.2.  Harmless while
+                        # the weighting barely engages and wrong as soon as
+                        # it does.  Uses `weight_bins`, deliberately coarser
+                        # than the centring grid: centring is estimated from
+                        # the buffer and wants resolution, normalising
+                        # happens inside the batch and wants occupancy.
+weight_min_count: 8     # cells thinner than this are zeroed rather than
+                        # centred on a mean estimated from nothing.
+                        # tempered_buffer estimates the cell means from the
+                        # WHOLE buffer on the acquisition's own acq_bins grid
+                        # rather than from the minibatch, which decouples how
+                        # finely the box is cut from how big the loss batch
+                        # is.  It needs buffer_capacity >= this x the number
+                        # of cells: 25000 over a 16x16 grid is about a hundred
+                        # per cell, where a batch of 128 over 8x8 is two and
+                        # collapses to the unweighted loss.
+warm_start: 4           # 4 x n_rollout = one full buffer, pre-filled without
+                        # paying for a rollout (the zero-initialised head makes
+                        # the first rollout uniform anyway)
+warm_start_kind: uniform   # uniform | mode | mcmc.  `mcmc` prefills the buffer
+                        # from the target's own sampler, so the loop starts on
+                        # configurations the target has mass on rather than on
+                        # a random gas.  Needs weighting=none: an entry the
+                        # model did not draw has no proposal density.
+warm_start_burn_in: 200 # mcmc only: sweeps before the prefill is taken
+warm_start_thin: 4      # mcmc only
+buffer_relax: 0
+anneal_steps: 0
+anneal_start: 0.5
+eval_chunk: 512
+symmetrize: false       # OFF by default.  Symmetrizing with the exact spin-flip
+                        # symmetry of the energy is unbiased and it does speed
+                        # training up, but equal weight on the two ordered modes
+                        # is a property the sampler must DISCOVER.  Forcing it
+                        # pins mag_mean at 0 and makes the magnetization
+                        # histogram symmetric by construction, i.e. it hides the
+                        # mode-collapse failure mode that mag_mean is the only
+                        # diagnostic for.  Keep it as an ablation, not a default.
+acq_frac_uniform: 1.0   # amortized targets only: fraction of the conditioning
+                        # drawn uniformly over the box.  1.0 = off, the plain
+                        # uniform draw every non-amortized run and the whole
+                        # Ising benchmark use.  Below 1.0 the rest comes from
+                        # the observable-free Fisher acquisition map, which
+                        # scores each cell of the box by Tr Cov[grad_theta U]
+                        # -- the family's own Fisher information, no observable
+                        # chosen by hand.  0.5 is the published mixture.
+acq_bins: [16, 16]      # acquisition grid over the conditioning box
+acq_ema: 0.9            # EMA on the per-cell moments
+acq_floor: 0.05         # uniform mass mixed in so no cell ever starves
+acq_power: 0.25         # < 1: the raw trace spans decades and would put all
+                        # adaptive mass in one or two cells

@@ -289,7 +289,7 @@ def main():
                 # evaluates the target at the endpoint and tends to a
                 # constant as the control converges, so the ESS computed
                 # from it tends to 1 whatever the samples look like.
-                # `dig_in/evaluation.py` writes log_w_logmeanexp instead of
+                # `discrete_sampler/evaluation.py` writes log_w_logmeanexp instead of
                 # log_Z for exactly those runs; key off that rather than off
                 # the method name, so any method that reports a path RND is
                 # caught the same way.
@@ -432,7 +432,7 @@ def _write_pm():
     # the reference chain costs minutes and never changes; the tables around
     # it get regenerated often, so reuse it once it is on disk
     if not os.path.exists(os.path.join(OUT, "pm_target.dat")):
-        from dig_in.targets import build_target, get_mcmc
+        from discrete_sampler.targets import build_target, get_mcmc
         # the benchmark's ordered target: configs/target/ising25_ordered.yaml
         t = build_target({"name": "ising", "lattice_shape": [25, 25],
                           "beta": 0.6})

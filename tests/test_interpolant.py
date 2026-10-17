@@ -3,10 +3,10 @@
 import pytest
 import torch
 
-from dig_in.methods.dsi.interpolant import MixtureInterpolant
-from dig_in.methods.dsi.sampling import log_weights_uniform_prior, tau_leap
-from dig_in.targets import IsingModel, PottsModel
-from dig_in.utils.metrics import ess, log_Z_is
+from discrete_sampler.methods.dig_in.interpolant import MixtureInterpolant
+from discrete_sampler.methods.dig_in.sampling import log_weights_uniform_prior, tau_leap
+from discrete_sampler.targets import IsingModel, PottsModel
+from discrete_sampler.utils.metrics import ess, log_Z_is
 from tests.enumeration import all_states, exact_fields_fn, pair_posterior
 
 TARGETS = {

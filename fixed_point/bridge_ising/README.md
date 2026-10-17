@@ -7,7 +7,7 @@ Self-contained: no source file outside this directory is imported. Third-party r
 
 ## Convention
 
-The target is the MDNS / discrete-ASBS Ising model, matching `dig_in/targets/ising`:
+The target is the MDNS / discrete-ASBS Ising model, matching `discrete_sampler/targets/ising`:
 
 ```
 E(s) = -J sum_<ij> s_i s_j - h sum_i s_i,  J = 1,  pi(s) ~ exp(-beta E(s))
@@ -35,16 +35,16 @@ kappa_t(c | x0, x1) = (1-t) 1[c=x0] + t 1[c=x1]
 X_t^d ~ kappa_t^d(. | X_0^d, X_1^d)   independently per coordinate
 ```
 
-**Relation to `dig_in/methods/dsi`.** The per-coordinate kernel is the same functional form as
+**Relation to `discrete_sampler/methods/dig_in`.** The per-coordinate kernel is the same functional form as
 that package's mixture interpolant at `omega = 0`, `N = 2`, but this is not one of its four
 variants, for two reasons:
 
-* **The prior is not uniform and not masked.** `dig_in/methods/dsi` states it explicitly --
+* **The prior is not uniform and not masked.** `discrete_sampler/methods/dig_in` states it explicitly --
   "the prior is uniform, the coupling independent: `x0 ~ U`, `x1 ~ nu`" -- and its other
   option is the absorbing mask. Here `X_0` is drawn from a *different physical temperature*,
   `Ising(beta 0.20)`. That is what makes this a bridge between two Boltzmann distributions
   rather than a generative path from noise, and it is why the prior bank is built by MCMC.
-* **The network parameterises `(q, phi)`, not `(v, vb)`.** `dig_in/methods/dsi` learns forward
+* **The network parameterises `(q, phi)`, not `(v, vb)`.** `discrete_sampler/methods/dig_in` learns forward
   and backward velocity rates simulated with a uniform mobility `Q = 1/N` and a `zeta_t`
   noise level. Here the two heads are a conditional and a time-derivative ratio, from which
   the generator below follows in closed form.

@@ -30,7 +30,7 @@ ROOT = os.path.dirname(HERE)
 TRAIN = os.path.join(ROOT, "runs", "alloy")
 RUNS = os.path.join(ROOT, "runs", "alloy_n5000")
 #: the packaged exact reference of each system
-REF = os.path.join(ROOT, "dig_in", "targets", "alloy", "data")
+REF = os.path.join(ROOT, "discrete_sampler", "targets", "alloy", "data")
 REF_DIR = {"agpd125": "agpd_N125", "cuau128": "cuau_N128"}
 OUT = os.path.join(ROOT, "results", "alloy")
 

@@ -12,11 +12,11 @@ import numpy as np
 import pytest
 import torch
 
-from dig_in.targets import IsingModel
-from dig_in.targets.ising.mcmc import IsingMCMC
-from dig_in.utils import metrics as M
-from dig_in.utils.gibbs import heat_bath_sweeps
-from dig_in.utils.lattice import check_independent, independent_groups
+from discrete_sampler.targets import IsingModel
+from discrete_sampler.targets.ising.mcmc import IsingMCMC
+from discrete_sampler.utils import metrics as M
+from discrete_sampler.utils.gibbs import heat_bath_sweeps
+from discrete_sampler.utils.lattice import check_independent, independent_groups
 
 
 @pytest.fixture(autouse=True)
@@ -66,7 +66,7 @@ def test_local_mcmc_matches_enumeration_on_odd_lattices(shape, method):
 
 def test_gibbs_sweeps_match_enumeration_on_an_odd_lattice():
     """The generic heat-bath sweep is what LEAPS mixes with and what the
-    uniform DSI variants relax the buffer with, so it must be exact too."""
+    uniform-interpolant variants relax the buffer with, so it must be exact too."""
     target = IsingModel((3, 3), beta=0.5)
     m_exact, e_exact = _exact_moments(target)
     x = target.sample_uniform(3000)
@@ -141,7 +141,7 @@ def test_weighted_correlation_reduces_to_unweighted_with_flat_weights():
 def test_tempered_weights_hit_the_target_ess():
     """nu* is the largest exponent in [0, 1] whose self-normalized weights
     keep ESS >= xi B; ESS is non-increasing in nu, so the rule is well posed."""
-    from dig_in.utils.tempering import log_ess_fraction, tempered_weights
+    from discrete_sampler.utils.tempering import log_ess_fraction, tempered_weights
 
     torch.manual_seed(0)
     lw = torch.randn(256) * 3.0  # badly degenerate raw weights
@@ -168,7 +168,7 @@ def test_tempered_weights_hit_the_target_ess():
 def test_tempered_weighting_reduces_to_the_plain_mean_at_flat_weights():
     """With equal weights the weighted CE is the unweighted one, so the only
     thing the option changes is how the batch is combined."""
-    from dig_in.methods.dsi.masked import MaskedInterpolant
+    from discrete_sampler.methods.dig_in.masked import MaskedInterpolant
 
     torch.manual_seed(0)
     mi = MaskedInterpolant(2)
@@ -191,10 +191,10 @@ def test_tempered_weighting_reduces_to_the_plain_mean_at_flat_weights():
 
 
 def test_weighted_variants_report_the_exponent_and_reject_bad_pairings():
-    from dig_in.methods import build_method
+    from discrete_sampler.methods import build_method
 
     t = IsingModel((4, 4), beta=0.4407)
-    d = build_method("dsi", t, dict(model={"name": "rescnn", "hidden_size": 16,
+    d = build_method("dig_in", t, dict(model={"name": "rescnn", "hidden_size": 16,
                                            "n_blocks": 2},
                                     noise="masked", loss="ce",
                                     weighting="tempered", target_ess=0.3,
@@ -205,12 +205,12 @@ def test_weighted_variants_report_the_exponent_and_reject_bad_pairings():
 
     # the weight needs a tractable q and an endpoint nothing touched afterwards
     with pytest.raises(ValueError):
-        build_method("dsi", t, dict(model={"name": "rescnn", "hidden_size": 16,
+        build_method("dig_in", t, dict(model={"name": "rescnn", "hidden_size": 16,
                                            "n_blocks": 2},
                                     noise="uniform", loss="ce",
                                     weighting="tempered"), device="cpu")
     with pytest.raises(ValueError):
-        build_method("dsi", t, dict(model={"name": "rescnn", "hidden_size": 16,
+        build_method("dig_in", t, dict(model={"name": "rescnn", "hidden_size": 16,
                                            "n_blocks": 2},
                                     noise="masked", loss="ce",
                                     weighting="tempered", buffer_relax=1),
@@ -219,7 +219,7 @@ def test_weighted_variants_report_the_exponent_and_reject_bad_pairings():
 
 def test_plain_importance_weights_are_the_ess_rule_at_zero():
     """target_ess = 0 accepts nu = 1 on every batch, however degenerate."""
-    from dig_in.utils.tempering import tempered_weights
+    from discrete_sampler.utils.tempering import tempered_weights
 
     torch.manual_seed(0)
     lw = torch.randn(256) * 10.0
@@ -229,14 +229,14 @@ def test_plain_importance_weights_are_the_ess_rule_at_zero():
 
 
 def test_hard_labels_are_the_endpoint_token_and_skip_the_label_table():
-    from dig_in.methods import build_method
+    from discrete_sampler.methods import build_method
 
     t = IsingModel((4, 4), beta=0.4407)
     cfg = dict(model={"name": "rescnn", "hidden_size": 16, "n_blocks": 2},
                noise="masked", loss="ce", n_rollout=32, batch_size=16,
                warm_start=1, rollout_every=5, eta=0.5)
     for weighting, ess in (("none", 0.3), ("tempered", 0.8), ("tempered", 0.0)):
-        d = build_method("dsi", t, dict(cfg, labels="hard", weighting=weighting,
+        d = build_method("dig_in", t, dict(cfg, labels="hard", weighting=weighting,
                                         target_ess=ess), device="cpu")
         assert "log_score" not in d.buf.extras
         assert ("log_p" in d.buf.extras) == (weighting != "none")
@@ -247,7 +247,7 @@ def test_hard_labels_are_the_endpoint_token_and_skip_the_label_table():
 
     # at eta = 1 the hard-label loss is masked CE against the one-hot endpoint
     torch.manual_seed(0)
-    d = build_method("dsi", t, dict(cfg, labels="hard", eta=1.0), device="cpu")
+    d = build_method("dig_in", t, dict(cfg, labels="hard", eta=1.0), device="cpu")
     x1, _ = d.buf.sample(16)
     torch.manual_seed(1)
     got = d._step_masked(x1, 1.0)
@@ -259,7 +259,7 @@ def test_hard_labels_are_the_endpoint_token_and_skip_the_label_table():
     assert got.item() == pytest.approx(want.item(), abs=1e-6)
 
     with pytest.raises(ValueError):
-        build_method("dsi", t, dict(cfg, noise="uniform", labels="hard"),
+        build_method("dig_in", t, dict(cfg, noise="uniform", labels="hard"),
                      device="cpu")
 
 
@@ -267,7 +267,7 @@ def test_hard_labels_are_the_endpoint_token_and_skip_the_label_table():
 # Evaluation history
 # ----------------------------------------------------------------------
 def test_history_is_truncated_to_the_checkpoint(tmp_path):
-    from dig_in.train import load_history, write_history
+    from discrete_sampler.train import load_history, write_history
 
     p = tmp_path / "history.jsonl"
     rows = [{"step": 0, "a": 1}, {"step": 5, "a": 2}, {"step": 10, "a": 3},
@@ -281,7 +281,7 @@ def test_history_is_truncated_to_the_checkpoint(tmp_path):
 
 
 def _train(run_dir, *overrides):
-    args = [sys.executable, "-m", "dig_in.train", "method=dsi_masked_ce",
+    args = [sys.executable, "-m", "discrete_sampler.train", "method=dig_in",
             "target=ising_small", "log_every=2", "eval_every=3",
             "checkpoint_every=100", "eval_samples=32", "final_eval_samples=32",
             "reference.n_samples=64", "reference.burn_in=10",

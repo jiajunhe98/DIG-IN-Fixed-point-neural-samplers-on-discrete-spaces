@@ -11,9 +11,10 @@ ordered), three seeds, 150k gradient steps.  The paper trained every run on
 one 80 GB H100.
 
 Each run goes to runs/lattice/<task>/<phase>/<method>/s<seed>/ (ablation:
-runs/ablation/ising25/<phase>/<arm>/s<seed>/).  `dig_in.train` resumes from the
-checkpoint in its run directory, so an interrupted run continues when its
-command is repeated, and a finished one (result.json present) is skipped.
+runs/ablation/ising25/<phase>/<arm>/s<seed>/).  `discrete_sampler.train`
+resumes from the checkpoint in its run directory, so an interrupted run
+continues when its command is repeated, and a finished one (result.json
+present) is skipped.
 Without --run the commands are printed, one per line, ready for a job array;
 they expect to be run from the repository root.
 
@@ -45,11 +46,11 @@ TASKS = {
 
 #: run directory -> hydra overrides
 METHODS = {
-    "digin": "method=dsi_masked_ce model=rescnn method.eta=0.1 "
+    "digin": "method=dig_in model=rescnn method.eta=0.1 "
              "method.weighting=tempered method.target_ess=0.8",
-    "mdns": "method=dsi_masked_ce model=rescnn method.labels=hard "
+    "mdns": "method=dig_in model=rescnn method.labels=hard "
             "method.weighting=tempered method.target_ess=0.0 method.eta=1.0",
-    "pdns": "method=dsi_masked_ce model=rescnn method.labels=hard "
+    "pdns": "method=dig_in model=rescnn method.labels=hard "
             "method.weighting=tempered method.target_ess=0.8 method.eta=1.0",
     "dasbs": "method=asbs model=rescnn",
     "dasbs_memoryless": "method=asbs_memoryless model=rescnn",
@@ -61,15 +62,15 @@ METHODS = {
 #: component ablation of DIG-IN on 25x25 Ising: each arm removes one
 #: ingredient.  The baseline is the sweep's own `digin` runs.
 ABLATIONS = {
-    "no_damping": "method=dsi_masked_ce model=rescnn method.eta=1.0 "
+    "no_damping": "method=dig_in model=rescnn method.eta=1.0 "
                   "method.weighting=tempered method.target_ess=0.8",
-    "no_gibbs_tempered": "method=dsi_masked_ce model=rescnn method.labels=hard "
+    "no_gibbs_tempered": "method=dig_in model=rescnn method.labels=hard "
                          "method.eta=0.1 method.weighting=tempered "
                          "method.target_ess=0.8",
-    "no_gibbs_plain": "method=dsi_masked_ce model=rescnn method.labels=hard "
+    "no_gibbs_plain": "method=dig_in model=rescnn method.labels=hard "
                       "method.eta=0.1 method.weighting=tempered "
                       "method.target_ess=0.0",
-    "no_iw": "method=dsi_masked_ce model=rescnn method.eta=0.1 "
+    "no_iw": "method=dig_in model=rescnn method.eta=0.1 "
              "method.weighting=none",
 }
 
@@ -95,7 +96,7 @@ def common(a) -> str:
 def method_overrides(over: str) -> str:
     # the masked sampler reveals one site per network call (D calls a draw);
     # the 64 single reveals only matter for a reduced step budget
-    if "method=dsi_masked_ce" in over:
+    if "method=dig_in" in over:
         over += " method.unmask_single=64"
     return over
 
@@ -119,7 +120,8 @@ def jobs(a):
                     args = (f"target={prefix}_{phase} seed={seed} {common(a)} "
                             f"{method_overrides(table[name])} "
                             f"hydra.run.dir={posix(out)}")
-                    yield out, [sys.executable, "-m", "dig_in.train", *args.split()]
+                    yield out, [sys.executable, "-m", "discrete_sampler.train",
+                                *args.split()]
 
 
 def main():

@@ -3,7 +3,7 @@ requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dig-in"
+name = "discrete-sampler"
 version = "1.0.0"
 description = "DIG-IN: fixed-point neural samplers on discrete spaces (Ising, Potts and alloy phase diagrams), with the MDNS, PDNS, DASBS, LEAPS and FrOGS baselines."
 readme = "README.md"
@@ -23,11 +23,11 @@ dependencies = [
 dev = ["pytest"]
 
 [tool.setuptools.packages.find]
-include = ["dig_in*"]
+include = ["discrete_sampler*"]
 
 [tool.setuptools.package-data]
 # the packaged alloy systems: cluster tables and their exact reference
-"dig_in.targets.alloy" = ["data/*/*"]
+"discrete_sampler.targets.alloy" = ["data/*/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

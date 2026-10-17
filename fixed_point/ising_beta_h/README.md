@@ -10,7 +10,7 @@ PT-in-beta references are diagnostics only.
 
 ## Design notes
 
-* **Convention.** `energy_mdns.py` matches `dig_in.targets.ising.IsingModel` exactly: the field is
+* **Convention.** `energy_mdns.py` matches `discrete_sampler.targets.ising.IsingModel` exactly: the field is
   multiplied by beta, and each bond is counted once.
 * **50x50.** Dilated residual blocks (`dilations=[1,1,2,4,8,1,1]`) reach a lattice-spanning receptive
   field in 7 blocks, where plain 3x3 blocks would need 25.

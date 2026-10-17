@@ -33,17 +33,17 @@ import os
 import sys
 
 # running a file in scripts/ puts scripts/ on sys.path, not the repo root, so
-# `import dig_in` fails from a plain checkout without an editable install
+# `import discrete_sampler` fails from a plain checkout without an editable install
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import torch
 from omegaconf import OmegaConf
 
-from dig_in.eval_alloy import (compare_phase_diagram, evaluate_alloy_grid,
+from discrete_sampler.eval_alloy import (compare_phase_diagram, evaluate_alloy_grid,
                             phase_diagram_from_rows)
-from dig_in.methods import build_method
-from dig_in.targets import build_target
-from dig_in.utils.checkpoint import load_checkpoint
+from discrete_sampler.methods import build_method
+from discrete_sampler.targets import build_target
+from discrete_sampler.utils.checkpoint import load_checkpoint
 
 
 def main():
@@ -73,7 +73,7 @@ def main():
     method_cfg = OmegaConf.to_container(cfg.method, resolve=True)
     name = method_cfg.pop("name")
     # ARM pins its own backbone; everything else takes the model group, the
-    # same merge dig_in.train does before building the method
+    # same merge discrete_sampler.train does before building the method
     if "model" not in method_cfg:
         method_cfg["model"] = OmegaConf.to_container(cfg.model, resolve=True)
     method = build_method(name, target, method_cfg, device=a.device)

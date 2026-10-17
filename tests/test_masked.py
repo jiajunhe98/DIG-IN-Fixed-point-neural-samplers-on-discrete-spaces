@@ -3,9 +3,9 @@
 import pytest
 import torch
 
-from dig_in.methods.dsi.masked import MaskedInterpolant, reveal_edges
-from dig_in.targets import IsingModel, PottsModel
-from dig_in.utils.metrics import ess, log_Z_is
+from discrete_sampler.methods.dig_in.masked import MaskedInterpolant, reveal_edges
+from discrete_sampler.targets import IsingModel, PottsModel
+from discrete_sampler.utils.metrics import ess, log_Z_is
 from tests.enumeration import all_states, exact_masked_logits_fn
 
 TARGETS = {
@@ -132,7 +132,7 @@ def test_block_order_keeps_a_blocks_coordinates_adjacent():
     internally ordered -- otherwise it is not 'reveal one particle at a time'."""
     import torch
 
-    from dig_in.methods.dsi.masked import MaskedInterpolant
+    from discrete_sampler.methods.dig_in.masked import MaskedInterpolant
 
     mi = MaskedInterpolant(5, block=3)
     torch.manual_seed(0)
@@ -150,7 +150,7 @@ def test_block_one_reproduces_the_uniform_order():
     lattice benchmarks are untouched."""
     import torch
 
-    from dig_in.methods.dsi.masked import MaskedInterpolant
+    from discrete_sampler.methods.dig_in.masked import MaskedInterpolant
 
     mi = MaskedInterpolant(5, block=1)
     g1 = torch.Generator().manual_seed(7)
@@ -165,7 +165,7 @@ def test_block_masks_are_prefixes_of_a_block_order():
     a prefix of some block order, never a scattered pattern."""
     import torch
 
-    from dig_in.methods.dsi.masked import MaskedInterpolant
+    from discrete_sampler.methods.dig_in.masked import MaskedInterpolant
 
     mi = MaskedInterpolant(5, block=2)
     torch.manual_seed(1)
@@ -189,7 +189,7 @@ def test_block_order_sampler_still_reveals_every_site_exactly_once():
     log-density that is the sum of D categorical draws."""
     import torch
 
-    from dig_in.methods.dsi.masked import MaskedInterpolant
+    from discrete_sampler.methods.dig_in.masked import MaskedInterpolant
 
     mi = MaskedInterpolant(4, block=2)
     D, n = 8, 32

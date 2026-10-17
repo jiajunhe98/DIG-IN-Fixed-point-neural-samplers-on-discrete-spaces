@@ -1,6 +1,6 @@
 defaults:
   - target: ising_small
-  - method: dsi_masked_ce
+  - method: dig_in
   - model: rescnn
   - _self_
 

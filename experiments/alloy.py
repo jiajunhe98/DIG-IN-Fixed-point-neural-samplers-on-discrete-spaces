@@ -47,7 +47,7 @@ GRID = ("log_every=500 eval_every=5000 checkpoint_every=2000 eval_at_start=false
 #: run directory -> (draws per state point in the evaluations during training,
 #: in the final one, hydra overrides)
 METHODS = {
-    "digin": (256, 256, "method=dsi_masked_ce model=rescnn method.acq_frac_uniform=0.5 "
+    "digin": (256, 256, "method=dig_in model=rescnn method.acq_frac_uniform=0.5 "
                    "method.rollout_every=200 method.batch_size=1024 "
                    "method.buffer_capacity=25000 method.eta=0.5 "
                    "method.n_rollout=2048 method.target_ess=0.9 "
@@ -74,7 +74,8 @@ def train_jobs(a):
                         f"wandb.enabled={'true' if a.wandb else 'false'} {over} "
                         f"hydra.run.dir={posix(out)}")
                 done = os.path.join(out, "result.json")
-                yield done, [[sys.executable, "-m", "dig_in.train", *args.split()]]
+                yield done, [[sys.executable, "-m", "discrete_sampler.train",
+                              *args.split()]]
 
 
 def sweep_jobs(a):

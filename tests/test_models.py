@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from dig_in.models import build_model
+from discrete_sampler.models import build_model
 
 NAMES = ["rescnn"]
 
@@ -37,7 +37,7 @@ def test_time_free(name):
 
 
 def test_leaps_local_equivariance():
-    from dig_in.methods.leaps.nets import LocEquivNet
+    from discrete_sampler.methods.leaps.nets import LocEquivNet
 
     net = LocEquivNet((4, 4), vocab_size=3, channels=8, kernel_sizes=(3, 5))
     x = torch.randint(0, 3, (4, 16))

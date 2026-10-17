@@ -9,8 +9,8 @@ Potts sampler is indistinguishable from a correct one.
 import pytest
 import torch
 
-from dig_in.targets import IsingModel, PottsModel
-from dig_in.utils import metrics as M
+from discrete_sampler.targets import IsingModel, PottsModel
+from discrete_sampler.utils import metrics as M
 
 
 @pytest.fixture(autouse=True)

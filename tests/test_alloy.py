@@ -11,10 +11,10 @@ import numpy as np
 import pytest
 import torch
 
-from dig_in.methods import build_method
-from dig_in.models import build_model
-from dig_in.targets.alloy import SYSTEMS, AlloyFamily
-from dig_in.utils.acquisition import FisherAcquisition, mixed_cond
+from discrete_sampler.methods import build_method
+from discrete_sampler.models import build_model
+from discrete_sampler.targets.alloy import SYSTEMS, AlloyFamily
+from discrete_sampler.utils.acquisition import FisherAcquisition, mixed_cond
 
 SMALL = {"name": "rescnn", "hidden_size": 16, "n_blocks": 5}
 
@@ -78,7 +78,7 @@ def test_chemical_potential_enters_with_the_packaged_factor_of_two(family):
 def test_exact_log_Z_matches_the_fixed_composition_sum(family):
     """ln Z(T, dmu) = logsumexp_n [ ln Z_n(T) + beta (dmu/2)(2n - N) ], and at
     a packaged temperature no interpolation is involved."""
-    from dig_in.targets.alloy.potential import KB_EV_PER_K
+    from discrete_sampler.targets.alloy.potential import KB_EV_PER_K
 
     T = float(family._ref["lnZ_T"][3])
     for dmu in (0.0, 0.13, -0.2):
@@ -230,10 +230,10 @@ def test_rescnn_covers_a_three_dimensional_torus(family):
 
 
 @pytest.mark.parametrize("name,cfg", [
-    ("dsi", dict(model=SMALL, noise="masked", loss="ce", batch_size=4,
+    ("dig_in", dict(model=SMALL, noise="masked", loss="ce", batch_size=4,
                  n_rollout=8, rollout_every=4, warm_start=1, acq_frac_uniform=0.5)),
     # the paper's alloy recipe: per-cell tempered weights and damping
-    ("dsi", dict(model=SMALL, noise="masked", loss="ce", batch_size=4,
+    ("dig_in", dict(model=SMALL, noise="masked", loss="ce", batch_size=4,
                  n_rollout=8, rollout_every=4, warm_start=1, acq_frac_uniform=0.5,
                  weighting="tempered_local", weight_bins=[4, 4], target_ess=0.9,
                  eta=0.5)),
@@ -260,12 +260,12 @@ def test_amortized_methods_train_and_sample_at_a_state_point(name, cfg):
 
 
 def test_grid_evaluation_and_phase_diagram_run_end_to_end():
-    from dig_in.eval_alloy import (compare_phase_diagram, evaluate_alloy_grid,
+    from discrete_sampler.eval_alloy import (compare_phase_diagram, evaluate_alloy_grid,
                                 phase_diagram_from_rows)
 
     torch.manual_seed(0)
     f = AlloyFamily("agpd125")
-    m = build_method("dsi", f, dict(model=SMALL, noise="masked", loss="ce",
+    m = build_method("dig_in", f, dict(model=SMALL, noise="masked", loss="ce",
                                     batch_size=4, n_rollout=8, rollout_every=4,
                                     warm_start=1), device="cpu")
     summary, rows = evaluate_alloy_grid(m, n_per_point=8, n_T=2, n_dmu=5)
