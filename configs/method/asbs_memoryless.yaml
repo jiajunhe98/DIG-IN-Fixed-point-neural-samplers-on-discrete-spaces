@@ -1,0 +1,8 @@
+# Baseline: ASBS in memoryless mode -- the controller alone transports the
+# uniform reference CTMC, so the path RND is a genuine (unbiased) Z estimator.
+# The default `asbs` config keeps the corrector, which samples better but whose
+# weights are a path-measure RND rather than a Z estimator.
+defaults:
+  - asbs
+
+memoryless: true

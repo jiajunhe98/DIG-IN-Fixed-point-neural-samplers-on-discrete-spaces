@@ -1,0 +1,9 @@
+# 25x25 Ising at T_c: beta_c = ln(1 + sqrt(2)) / 2 = 0.4406868, T_c = 2.2692.
+# Critical point -- diverging correlation length, the hard regime for any
+# local/factorized proposal.
+# Exact log Z from Kaufman's formula (h = 0).
+name: ising
+lattice_shape: [25, 25]
+beta: 0.4406868
+J: 1.0
+h: 0.0

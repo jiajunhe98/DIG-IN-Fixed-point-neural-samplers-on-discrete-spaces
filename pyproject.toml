@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dds"
+version = "1.0.0"
+description = "DIG-IN: fixed-point neural samplers on discrete spaces (Ising, Potts and alloy phase diagrams), with the MDNS, PDNS, DASBS, LEAPS and FrOGS baselines."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.0",
+    "numpy",
+    "scipy",
+    "hydra-core>=1.3",
+    "omegaconf",
+    "tqdm",
+    "matplotlib",
+    "wandb",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["dds*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,10 @@
+# Periodic residual CNN with a torus-covering receptive field (the default).
+# Ported from the fixed-point masked-diffusion sampler; see dds/models/rescnn.py.
+name: rescnn
+hidden_size: 96
+n_blocks: 7
+kernel_size: 3
+dilations: auto       # auto | none | explicit list, e.g. [1, 1, 2, 4, 8, 16, 1]
+global_feat: false    # redundant once the receptive field covers the torus
+zero_init_head: true  # start as the uniform predictor (high-entropy init)
+cover_torus: true     # build-time failure if the receptive field misses L//2

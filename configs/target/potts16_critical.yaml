@@ -1,0 +1,14 @@
+# 16x16 3-state Potts at the critical point, beta_c = log(1 + sqrt(3)) = 1.005.
+#
+# The Potts triple is beta = 1.2 (ordered), 1.005 (critical) and 0.5
+# (disordered); beta = 1.2 is where MDNS is reported to collapse onto one mode.
+#
+# There is NO exact log Z here: enumeration needs q^D = 3^256 states and the
+# transfer matrix needs q^L = 3^16 row configurations, both far past the limits
+# in `PottsModel.exact_log_Z`.  Runs are scored against the reference sample
+# and by the mode-resolving diagnostics, not by |d log Z|.
+name: potts
+lattice_shape: [16, 16]
+q: 3
+beta: 1.005
+J: 1.0

@@ -1,0 +1,4 @@
+# Shell scripts must stay LF: they run inside a Linux container, and CRLF
+# makes bash fail with a bad-interpreter error. core.autocrlf=true would
+# otherwise rewrite them on checkout.
+*.sh text eol=lf

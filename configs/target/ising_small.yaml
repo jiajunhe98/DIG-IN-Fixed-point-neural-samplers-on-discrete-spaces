@@ -1,0 +1,6 @@
+# 4x4 Ising at the critical coupling: exact log Z by enumeration
+name: ising
+lattice_shape: [4, 4]
+beta: 0.4407
+J: 1.0
+h: 0.0

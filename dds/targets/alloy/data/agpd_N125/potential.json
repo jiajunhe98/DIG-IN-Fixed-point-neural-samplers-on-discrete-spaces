@@ -1,0 +1,47 @@
+{
+  "system": "agpd",
+  "kind": "discrete",
+  "degrees_of_freedom": "one binary spin per lattice site; no positions, no volume, no particle-number channel",
+  "state_space": "2^125 configurations",
+  "contrast": "the sibling packages cuni_N256 and cuag_N108 in the same directory are HYBRID: their state is (u, w, s) with continuous displacements u and log-volume w alongside the species labels s.  Here the state is s alone.",
+  "npz": "cluster_tables.npz",
+  "n_sites": 125,
+  "size": [
+    5,
+    5,
+    5
+  ],
+  "lattice": "fcc",
+  "a": 4.09,
+  "spin_up_element": "Ag",
+  "spin_down_element": "Pd",
+  "mixing_energy": false,
+  "max_cluster_dia": [
+    8.0,
+    6.5,
+    5.5
+  ],
+  "cutoff_rule": "largest pairwise distance in the figure (the rule of the CLEASE version that fitted these ECIs; current CLEASE uses twice the distance from the figure's centroid and would enumerate a different, smaller orbit set)",
+  "n_eci": 45,
+  "n_figures": 104875,
+  "n_figures_per_site": 2793,
+  "eci_file": "eci_agpd.json",
+  "eci_sha256": "f69f0d3cb28aa866719fee197c94bef966f7db09cd675c182d9d6edcb1f694ec",
+  "eci_source": "Damewood, Schwalbe-Koda, Gomez-Bombarelli, npj Comput. Mater. 8, 61 (2022); code release learningmatter-mit/Segal",
+  "kB_eV_per_K": 8.617e-05,
+  "convention": "s_i = +1 is the spin-up element; c = fraction of spin-up sites; H(s) = E(s) - (dmu/2) sum_i s_i, so dmu is the physical chemical-potential difference",
+  "clease_agreement_at_packaging": {
+    "n_configs": 66,
+    "max_abs_energy_error_eV": 1.0769163338864018e-14,
+    "max_rel_energy_error": 3.4366668700606116e-14,
+    "max_cf_error": 0.0,
+    "max_multilinear_diff_error_eV": 8.881784197001252e-16,
+    "max_multilinear_diff_magnitude_eV": 0.00034609655729633815,
+    "energy_range_eV": [
+      -6.690675418559548,
+      0.8925771307894119
+    ]
+  },
+  "temperature_K_ref": 550.0,
+  "dmu_ref": 0.0
+}

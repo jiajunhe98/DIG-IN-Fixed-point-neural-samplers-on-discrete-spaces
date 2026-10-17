@@ -1,0 +1,59 @@
+defaults:
+  - target: ising_small
+  - method: dsi_masked_ce
+  - model: rescnn
+  - _self_
+
+seed: 0
+device: auto            # auto | cpu | cuda | cuda:k
+n_steps: 5000
+log_every: 100
+eval_every: 1000
+eval_at_start: true     # score the untrained sampler too, so every curve starts at step 0
+eval_samples: 2048
+final_eval_samples: 4096
+checkpoint_every: 0     # 0 = only at the end
+save_final_samples: true  # write samples.pt (final draw + log weights) beside
+                        # the history, so distributional plots can be rebuilt
+                        # without shipping a checkpoint or re-running a sampler
+
+grid:                   # amortized targets only: the (T, delta_mu) evaluation grid
+  n_T: 11
+  n_dmu: 11
+  T_range: null         # null = the family's own range; set to pin the grid to
+  dmu_range: null       # a comparison's grid rather than the training box
+  n_per_point: 2048     # model samples drawn at each state point
+  save_samples: false   # alloy families only: write the final evaluation's
+                        # raw draws (bit-packed configurations, log weights,
+                        # energies, state points) to grid_samples.npz, so a
+                        # different observable or boundary construction can
+                        # be recomputed without re-sampling the sweep
+  final_reference_grid: false   # alloy families only: the final evaluation
+                        # runs on the exact (T, delta_mu) sweep the packaged
+                        # reference was generated at, instead of n_T x n_dmu
+
+reference:              # reference MCMC samples for comparison metrics
+  n_samples: 4096       # 0 disables
+  method: mixed         # metropolis | heat_bath | wolff | swendsen_wang | mixed
+  burn_in: 500
+  thin: 5
+  cache_dir: data/reference
+
+wandb:
+  enabled: false
+  mode: null            # null = online when WANDB_API_KEY is set, else
+                        # offline.  Offline still records everything; sync
+                        # afterwards with `wandb sync <run>/wandb/offline-*`
+  project: discrete-diffusion-samplers
+  entity: null
+  name: null
+  tags: []
+
+hydra:
+  run:
+    dir: runs/single/${now:%Y-%m-%d_%H-%M-%S}_${method.name}_${target.name}
+  sweep:
+    dir: multirun/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.num}_${method.name}_${target.name}
+  job:
+    chdir: true

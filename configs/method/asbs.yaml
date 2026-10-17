@@ -1,0 +1,30 @@
+# Baseline: Discrete Adjoint Schrödinger Bridge Sampler
+name: asbs
+noise:
+  kind: log_linear
+  gamma: 1.0
+  alpha: 0.5
+loss_controller: tm     # tm | dm
+loss_corrector: dm      # tm | dm
+breg_func: tlogt        # tlogt | -logt | t2
+dm_eps: 0.01
+num_repl: 8
+batch_size: 128
+buffer_size: 2048
+resample_every: 20
+n_rollout: 512
+steps_controller: 400
+steps_corrector: 200
+sampling_steps: 100
+init: uniform           # uniform | const (zero-temperature init)
+memoryless: false       # true => unbiased log Z, no corrector
+use_log_rnd: false
+lr: 1e-3
+weight_decay: 0.0
+grad_clip: 1.0            # required: the Bregman loss exponentiates logits, and an
+                        # overflowing batch otherwise forces the non-finite-update
+                        # guard to skip most of training (>11k of 20k steps)
+ema_decay: 0.9999
+anneal_steps: 0
+anneal_start: 0.5
+eval_chunk: 512

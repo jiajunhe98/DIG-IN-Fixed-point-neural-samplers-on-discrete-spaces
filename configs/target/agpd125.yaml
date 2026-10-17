@@ -1,0 +1,19 @@
+# Ag-Pd cluster expansion on a 5x5x5 primitive fcc cell (125 binary sites),
+# amortized over the semi-grand plane (T, delta_mu).
+#
+# The Hamiltonian is H(s) = E(s) - (delta_mu/2) sum_i s_i with E the raw
+# DFT-fitted cluster expansion of Damewood et al. (npj Comput. Mater. 8, 61,
+# 2022).  s = +1 is Ag, c is the Ag fraction, delta_mu = mu_Ag - mu_Pd in eV.
+# The factor of two is the packaged convention -- dropping it halves the
+# chemical-potential axis and still produces plausible curves.
+#
+# Ranges are the packaged sweep: T in [200, 900] K step 25, delta_mu in
+# [-0.4, 0.4] eV step 0.01.  Ordered phase: fcc solid solution at c = 0.5.
+name: alloy_family
+system: agpd125
+T_range: [200.0, 900.0]
+dmu_range: [-0.4, 0.4]
+T_ref: null             # null = the box midpoint, used where a code path has
+dmu_ref: 0.0            # no conditioning to offer
+T_sampling: inverse     # draw T uniformly in beta: the log-density is linear
+                        # in beta, so this spreads score magnitudes evenly

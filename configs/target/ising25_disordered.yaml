@@ -1,0 +1,8 @@
+# 25x25 Ising above T_c: T = 3.333 = 1.469 T_c (beta = 0.3).  Disordered phase --
+# unimodal, short correlation length; the easy regime, the control.
+# Exact log Z from Kaufman's formula (h = 0).
+name: ising
+lattice_shape: [25, 25]
+beta: 0.3
+J: 1.0
+h: 0.0

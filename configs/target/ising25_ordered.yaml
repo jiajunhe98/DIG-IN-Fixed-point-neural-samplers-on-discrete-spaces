@@ -1,0 +1,8 @@
+# 25x25 Ising below T_c: T = 1.667 = 0.734 T_c (beta = 0.6).  Ordered phase --
+# strongly bimodal in the magnetization, the hard regime for mode coverage.
+# Exact log Z from Kaufman's formula (h = 0).
+name: ising
+lattice_shape: [25, 25]
+beta: 0.6
+J: 1.0
+h: 0.0

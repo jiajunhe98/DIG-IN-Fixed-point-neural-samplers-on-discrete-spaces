@@ -1,0 +1,6 @@
+# 3-state Potts on 4x4: exact log Z by transfer matrix
+name: potts
+lattice_shape: [4, 4]
+q: 3
+beta: 1.005
+J: 1.0

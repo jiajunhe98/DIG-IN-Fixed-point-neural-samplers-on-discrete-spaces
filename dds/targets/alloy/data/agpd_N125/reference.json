@@ -1,0 +1,514 @@
+{
+  "system": "agpd",
+  "N": 125,
+  "kind": "discrete",
+  "degrees_of_freedom": "one binary spin per lattice site; no positions, no volume.  The sibling cuni_N256 and cuag_N108 packages are hybrid, with continuous (u, w) channels this system does not have.",
+  "conventions": {
+    "s": "spin per site, +1 = Ag, -1 = Pd",
+    "c": "fraction of spin-up sites",
+    "dmu": "mu_Ag - mu_Pd [eV]",
+    "H": "H(s) = E(s) - (dmu/2) sum_i s_i",
+    "E": "raw cluster-expansion energy",
+    "lattice": "fcc, 5x5x5 primitive cells, a = 4.09 A",
+    "kB": "8.617e-05 eV/K",
+    "sweeps": "published grid: dmu in [-0.4, 0.4] eV step 0.01; T in [200.0, 900.0] K step 25.0"
+  },
+  "schema": {
+    "lnZ.npz": {
+      "T": "(nT,) the published temperature sweep [K]",
+      "n": "(N+1,) number of spin-up atoms",
+      "composition": "(N+1,) c = n/N",
+      "lnZ": "(nT, N+1) ln Z_n(T), fixed composition, ONE additive constant per isotherm, pinned by the closed form at n=0",
+      "lnZ_err": "(nT, N+1) standard error from 8 independent repeats",
+      "valid": "(nT, N+1) False where no repeat sampled that composition",
+      "f_mix": "(nT, N+1) mixing free energy [eV/atom], relative to the pure-limit tie line -- directly comparable to the published metadynamics arrays in published/",
+      "f_mix_err": "(nT, N+1) its standard error [eV/atom]",
+      "e_mean, e2_mean": "(nT, N+1) <E>, <E^2> at fixed (T, n) [eV]",
+      "warren_cowley": "(nT, N+1) first-shell short-range order",
+      "eta_mean, eta2_mean": "(nT, N+1, 3) fcc X-point order parameters; absent for an odd cell",
+      "ladder_*": "the same quantities on the full beta-uniform tempering ladder (up to 2400 K), which is what was simulated; the unprefixed arrays are its restriction to the published sweep",
+      "anchor_n, anchor_lnZ": "the closed-form values, (4,) and (4, nT)"
+    },
+    "state_points.npz": {
+      "dmu": "(nD,) [eV]",
+      "T": "(nT,) [K]",
+      "c": "(nD, nT, W) mean composition, PER WALKER",
+      "c_var": "(nD, nT, W) its variance within each walker",
+      "E, E_sq": "(nD, nT, W) mean energy and mean square [eV]",
+      "eta": "(nD, nT, W, 3) X-point order parameters",
+      "c_spread": "(nD, nT) range of the per-walker mean composition",
+      "trapped": "(nD, nT) walkers that never agreed -- plain MC has not crossed the barrier there and its average is a composition no configuration visits",
+      "saturated": "(nD, nT) every walker in the same pure state; the equilibrium really is one configuration, so zero variance is correct rather than stuck",
+      "note": "plain Metropolis, no bias and no tempering. Sample averages only -- no estimator, no anchor."
+    }
+  },
+  "routes": {
+    "multicanonical": "Wang-Landau flattening of the composition histogram, then FROZEN bias with replica exchange over a beta-uniform ladder. Gives ln Z_n(T), hence the whole dmu axis analytically.",
+    "direct_sgc": "plain semi-grand Metropolis at each published (dmu, T), many walkers. Independent of the above in algorithm and in run; where they disagree, `trapped` says why."
+  },
+  "boundaries": {
+    "system": "agpd",
+    "n_sites": 125,
+    "temperature_range": "the published sweep only, not the tempering ladder",
+    "note": "Three independent constructions.  common_tangent is the thermodynamic definition on f_mix(c, T); susceptibility is the composition jump a semi-grand-canonical simulation sees; heat_capacity is the order-disorder line the reference notebooks draw.",
+    "common_tangent": [
+      {
+        "temperature": 200.0,
+        "c_left": 0.0,
+        "c_right": 0.392,
+        "depth": 0.0033335249316305895
+      },
+      {
+        "temperature": 225.0,
+        "c_left": 0.0,
+        "c_right": 0.392,
+        "depth": 0.002939627121665917
+      },
+      {
+        "temperature": 250.0,
+        "c_left": 0.0,
+        "c_right": 0.384,
+        "depth": 0.002568120954897859
+      },
+      {
+        "temperature": 275.0,
+        "c_left": 0.0,
+        "c_right": 0.376,
+        "depth": 0.002213928422555165
+      },
+      {
+        "temperature": 300.0,
+        "c_left": 0.0,
+        "c_right": 0.368,
+        "depth": 0.001879302332789913
+      },
+      {
+        "temperature": 325.0,
+        "c_left": 0.0,
+        "c_right": 0.36,
+        "depth": 0.00156318515727992
+      },
+      {
+        "temperature": 350.0,
+        "c_left": 0.008,
+        "c_right": 0.344,
+        "depth": 0.0012875598377220347
+      },
+      {
+        "temperature": 375.0,
+        "c_left": 0.008,
+        "c_right": 0.336,
+        "depth": 0.0010327234890556564
+      },
+      {
+        "temperature": 400.0,
+        "c_left": 0.016,
+        "c_right": 0.32,
+        "depth": 0.0008038200176282671
+      },
+      {
+        "temperature": 425.0,
+        "c_left": 0.016,
+        "c_right": 0.304,
+        "depth": 0.0006018928520637838
+      },
+      {
+        "temperature": 450.0,
+        "c_left": 0.024,
+        "c_right": 0.288,
+        "depth": 0.0004240752798937708
+      },
+      {
+        "temperature": 475.0,
+        "c_left": 0.032,
+        "c_right": 0.272,
+        "depth": 0.0002806256852634949
+      },
+      {
+        "temperature": 500.0,
+        "c_left": 0.04,
+        "c_right": 0.256,
+        "depth": 0.00017923842644184187
+      },
+      {
+        "temperature": 525.0,
+        "c_left": 0.056,
+        "c_right": 0.232,
+        "depth": 9.09553395356151e-05
+      },
+      {
+        "temperature": 550.0,
+        "c_left": 0.072,
+        "c_right": 0.208,
+        "depth": 3.3625126768348224e-05
+      }
+    ],
+    "susceptibility": [
+      {
+        "temperature": 200.0,
+        "dmu": -0.13,
+        "c_left": 0.0004137260448127369,
+        "c_right": 0.412262503765785,
+        "c_mid": 0.002494898212948497,
+        "dc_ddmu": 9.76897109357733
+      },
+      {
+        "temperature": 225.0,
+        "dmu": -0.13,
+        "c_left": 0.001000809226533696,
+        "c_right": 0.4141890278741024,
+        "c_mid": 0.33683451307360407,
+        "dc_ddmu": 223.8430827948592
+      },
+      {
+        "temperature": 250.0,
+        "dmu": -0.13,
+        "c_left": 0.002139729589828493,
+        "c_right": 0.41616903034360253,
+        "c_mid": 0.3890116269706303,
+        "dc_ddmu": 6.436860224071108
+      },
+      {
+        "temperature": 275.0,
+        "dmu": -0.13,
+        "c_left": 0.0050433799668046266,
+        "c_right": 0.4181625546691675,
+        "c_mid": 0.39099272229356574,
+        "dc_ddmu": 6.022929467184059
+      },
+      {
+        "temperature": 300.0,
+        "dmu": -0.14,
+        "c_left": 0.004558627066730857,
+        "c_right": 0.3927662526122413,
+        "c_mid": 0.20054668318606622,
+        "dc_ddmu": 298.7254043976736
+      },
+      {
+        "temperature": 325.0,
+        "dmu": -0.14,
+        "c_left": 0.0077478207547795695,
+        "c_right": 0.39464690090640686,
+        "c_mid": 0.3593325528948792,
+        "dc_ddmu": 13.002023724948879
+      },
+      {
+        "temperature": 350.0,
+        "dmu": -0.15,
+        "c_left": 0.007842476120311966,
+        "c_right": 0.3640116401312032,
+        "c_mid": 0.019994800035994454,
+        "dc_ddmu": 18.131567276566987
+      },
+      {
+        "temperature": 375.0,
+        "dmu": -0.15,
+        "c_left": 0.012382951893120258,
+        "c_right": 0.36715250208774913,
+        "c_mid": 0.22130741183258273,
+        "dc_ddmu": 159.77069951749235
+      },
+      {
+        "temperature": 400.0,
+        "dmu": -0.15,
+        "c_left": 0.021349192106445272,
+        "c_right": 0.36995578043474214,
+        "c_mid": 0.3234308516125582,
+        "dc_ddmu": 19.3807381024946
+      },
+      {
+        "temperature": 425.0,
+        "dmu": -0.16,
+        "c_left": 0.017953508775693995,
+        "c_right": 0.33363521374405913,
+        "c_mid": 0.07189375835764517,
+        "dc_ddmu": 56.03245544121151
+      },
+      {
+        "temperature": 450.0,
+        "dmu": -0.16,
+        "c_left": 0.02858666511790684,
+        "c_right": 0.33942941974053864,
+        "c_mid": 0.2264283035452967,
+        "dc_ddmu": 71.11913931111408
+      },
+      {
+        "temperature": 475.0,
+        "dmu": -0.16,
+        "c_left": 0.05622295084314712,
+        "c_right": 0.3442938040238983,
+        "c_mid": 0.2851053760197786,
+        "dc_ddmu": 22.840497069357404
+      },
+      {
+        "temperature": 500.0,
+        "dmu": -0.17,
+        "c_left": 0.035665446788512925,
+        "c_right": 0.30203575699131546,
+        "c_mid": 0.13229373421549445,
+        "dc_ddmu": 49.69425207910649
+      },
+      {
+        "temperature": 525.0,
+        "dmu": -0.17,
+        "c_left": 0.05808735922473424,
+        "c_right": 0.31174042166846505,
+        "c_mid": 0.21408765478286124,
+        "dc_ddmu": 37.59527146231521
+      },
+      {
+        "temperature": 550.0,
+        "dmu": -0.18,
+        "c_left": 0.042474238636600554,
+        "c_right": 0.25395164871052706,
+        "c_mid": 0.1012042743283604,
+        "dc_ddmu": 24.738829616843788
+      },
+      {
+        "temperature": 575.0,
+        "dmu": -0.18,
+        "c_left": 0.06175213337226805,
+        "c_right": 0.273759899276133,
+        "c_mid": 0.15817252129079118,
+        "dc_ddmu": 29.828553115803274
+      },
+      {
+        "temperature": 600.0,
+        "dmu": -0.18,
+        "c_left": 0.09168665401866205,
+        "c_right": 0.2865819305024139,
+        "c_mid": 0.2039806934468455,
+        "dc_ddmu": 23.585029948600678
+      },
+      {
+        "temperature": 625.0,
+        "dmu": -0.19,
+        "c_left": 0.06509042666873441,
+        "c_right": 0.23311064072648363,
+        "c_mid": 0.12960994456266972,
+        "dc_ddmu": 19.65021050284027
+      },
+      {
+        "temperature": 650.0,
+        "dmu": -0.19,
+        "c_left": 0.08805975320446952,
+        "c_right": 0.2519434357108492,
+        "c_mid": 0.16722066903319338,
+        "dc_ddmu": 19.418904307298284
+      },
+      {
+        "temperature": 675.0,
+        "dmu": -0.19,
+        "c_left": 0.11569163928785828,
+        "c_right": 0.26575985720317913,
+        "c_mid": 0.19694890335150933,
+        "dc_ddmu": 16.618201950094434
+      },
+      {
+        "temperature": 700.0,
+        "dmu": -0.2,
+        "c_left": 0.08678857658891946,
+        "c_right": 0.21961107025618398,
+        "c_mid": 0.14472817688031686,
+        "dc_ddmu": 14.648701520557447
+      },
+      {
+        "temperature": 725.0,
+        "dmu": -0.2,
+        "c_left": 0.10818555055260719,
+        "c_right": 0.23642845241472993,
+        "c_mid": 0.17090746222179384,
+        "dc_ddmu": 14.024606434625698
+      },
+      {
+        "temperature": 750.0,
+        "dmu": -0.2,
+        "c_left": 0.13094437313329943,
+        "c_right": 0.24950613248127407,
+        "c_mid": 0.1927825156539666,
+        "dc_ddmu": 12.571268275606664
+      },
+      {
+        "temperature": 775.0,
+        "dmu": -0.21,
+        "c_left": 0.10375636952063172,
+        "c_right": 0.21078154432875792,
+        "c_mid": 0.15285605081719839,
+        "dc_ddmu": 11.343083364192466
+      },
+      {
+        "temperature": 800.0,
+        "dmu": -0.21,
+        "c_left": 0.12215138534582641,
+        "c_right": 0.22542802413386265,
+        "c_mid": 0.17257241316325095,
+        "dc_ddmu": 10.875668850232909
+      },
+      {
+        "temperature": 825.0,
+        "dmu": -0.21,
+        "c_left": 0.140652778857936,
+        "c_right": 0.2374989438853804,
+        "c_mid": 0.18984234731927013,
+        "dc_ddmu": 10.05193650758715
+      },
+      {
+        "temperature": 850.0,
+        "dmu": -0.21,
+        "c_left": 0.15773717671184107,
+        "c_right": 0.2478982351076491,
+        "c_mid": 0.20450858774433367,
+        "dc_ddmu": 9.249095473643795
+      },
+      {
+        "temperature": 875.0,
+        "dmu": -0.22,
+        "c_left": 0.13181400207194477,
+        "c_right": 0.2173415579404716,
+        "c_mid": 0.17355876793333044,
+        "dc_ddmu": 8.826890006801198
+      },
+      {
+        "temperature": 900.0,
+        "dmu": -0.22,
+        "c_left": 0.14702024466658278,
+        "c_right": 0.22841093677772573,
+        "c_mid": 0.18783183361679995,
+        "dc_ddmu": 8.340356001568697
+      }
+    ],
+    "heat_capacity": [
+      {
+        "dmu": -0.22,
+        "temperature": 875.0,
+        "heat_capacity": 0.00661732309991397,
+        "c_left": 0.13181400207194477,
+        "c_right": 0.2173415579404716
+      },
+      {
+        "dmu": -0.21,
+        "temperature": 800.0,
+        "heat_capacity": 0.008832052691887329,
+        "c_left": 0.12215138534582641,
+        "c_right": 0.22542802413386265
+      },
+      {
+        "dmu": -0.2,
+        "temperature": 725.0,
+        "heat_capacity": 0.012349107240587038,
+        "c_left": 0.10818555055260719,
+        "c_right": 0.23642845241472993
+      },
+      {
+        "dmu": -0.19,
+        "temperature": 650.0,
+        "heat_capacity": 0.018531180031267306,
+        "c_left": 0.08805975320446952,
+        "c_right": 0.2519434357108492
+      },
+      {
+        "dmu": -0.18,
+        "temperature": 575.0,
+        "heat_capacity": 0.030606471303297262,
+        "c_left": 0.06175213337226805,
+        "c_right": 0.273759899276133
+      },
+      {
+        "dmu": -0.17,
+        "temperature": 500.0,
+        "heat_capacity": 0.05419049830495257,
+        "c_left": 0.035665446788512925,
+        "c_right": 0.30203575699131546
+      },
+      {
+        "dmu": -0.16,
+        "temperature": 450.0,
+        "heat_capacity": 0.10394247756251264,
+        "c_left": 0.02858666511790684,
+        "c_right": 0.33942941974053864
+      },
+      {
+        "dmu": -0.15,
+        "temperature": 375.0,
+        "heat_capacity": 0.2618999006769784,
+        "c_left": 0.012382951893120258,
+        "c_right": 0.36715250208774913
+      },
+      {
+        "dmu": -0.14,
+        "temperature": 300.0,
+        "heat_capacity": 0.6295921220292244,
+        "c_left": 0.004558627066730857,
+        "c_right": 0.3927662526122413
+      },
+      {
+        "dmu": -0.13,
+        "temperature": 225.0,
+        "heat_capacity": 0.7023119806609165,
+        "c_left": 0.001000809226533696,
+        "c_right": 0.4141890278741024
+      }
+    ]
+  },
+  "gates": {
+    "closed_form_anchors": {
+      "what": "ln Z_N at N = 0, 1, n_sites-1, n_sites is known exactly. N = 0 pins the additive constant; the other three are held out.",
+      "worst_held_out_residual_lnZ": 0.15231987201721608
+    },
+    "exact_enumeration": {
+      "n_sites": 16,
+      "n_configurations": 65536,
+      "max_abs_ln_z_difference": 0.033515360693485374,
+      "rms_ln_z_difference": 0.012829391551816218,
+      "max_abs_f_mix_difference_eV_per_atom": 0.00018524565923080938,
+      "closed_form_vs_enumeration": 4.973799150320701e-14,
+      "n_samples": 4000
+    },
+    "replica_exchange": {
+      "worst_rung_swap_acceptance": 0.9461895424835487,
+      "min_round_trips_per_unit": 135433,
+      "what": "a severed ladder shows a flat stretch in the fraction of up-movers and zero round trips, with nothing to compare against"
+    },
+    "independent_algorithm": {
+      "n_points": 2349,
+      "n_walkers_converged": 2344,
+      "max_abs_dc_where_walkers_agree": 0.0036201200331954578,
+      "median_abs_dc_where_walkers_agree": 5.551101769812883e-05,
+      "max_abs_dc_overall": 0.3356366017870545,
+      "fraction_walkers_trapped": 0.0021285653469561515,
+      "fraction_saturated": 0.01319710515112814,
+      "min_walker_c_variance_unsaturated": 0.0,
+      "what": "<c>(dmu, T) from the two routes. They share only the Hamiltonian, so agreement is evidence rather than precision.",
+      "caveat": "`max_abs_dc_where_walkers_agree` can be large even though the walkers agree with each other. The spread test detects walkers landing in DIFFERENT basins; it cannot detect all of them landing in the SAME wrong one, which is what happens when the barrier is crossed early and never again. At those conditions the disagreement between the two routes is itself the signal, and the multicanonical route is the one to trust: its bias removes the composition barrier by construction, and it is the route the closed-form anchors and the exhaustive enumeration bound."
+    },
+    "vs_published_metadynamics": {
+      "status": "compared",
+      "n_temperatures": 15,
+      "max_abs_diff_eV_per_atom": 0.0005123030145364124,
+      "median_max_abs_diff_eV_per_atom": 0.00036913712864422576,
+      "max_relative_diff": 0.005644653447377148
+    },
+    "tie_line_thresholds": {
+      "our_boundaries": "00_results/phase_diagram.json uses a depth threshold of 5 sigma of the MEASURED statistical error on f_mix, per temperature. A fixed threshold is not safe: 1e-5 eV/atom is only ~1.4x the error at the hot end, and the convex-hull depth is a maximum over hundreds of noisy points, so a fixed rule manufactured tie lines up to the top of the temperature range on the 512-site cells.",
+      "vs_published": "the comparison in comparison_to_published.json instead uses the source notebooks' own rule -- a gap wider than 8 composition steps, ~0.064 of the axis -- applied identically to both arrays, which is what makes it like-for-like.",
+      "notebook_rule_steps_for_this_cell": 8
+    },
+    "vs_published_boundaries": {
+      "status": "compared",
+      "gap_threshold_steps": 8,
+      "max_boundary_composition_diff": 0.032
+    },
+    "statistical_error": {
+      "median_lnZ_standard_error": 0.015199082054054704,
+      "median_f_mix_standard_error_eV_per_atom": 4.420775003953003e-06,
+      "from": "the scatter across 8 independent repeats"
+    }
+  },
+  "configurations": {
+    "where": "02_sgc_merged/merged_direct_mc.npz, key `snapshots`",
+    "shape": "(n_snapshots, nD, nT, W, ceil(N/8)) uint8, bit-packed",
+    "decode": "potential.load_target('potential').unpack(packed)",
+    "bit": "1 = spin +1 = Ag",
+    "energies": "02_sgc_merged/snapshot_energies.npz, same leading shape"
+  }
+}

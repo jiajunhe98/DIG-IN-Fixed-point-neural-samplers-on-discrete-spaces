@@ -1,0 +1,1364 @@
+{
+  "system": "cuau",
+  "N": 128,
+  "kind": "discrete",
+  "degrees_of_freedom": "one binary spin per lattice site; no positions, no volume.  The sibling cuni_N256 and cuag_N108 packages are hybrid, with continuous (u, w) channels this system does not have.",
+  "conventions": {
+    "s": "spin per site, +1 = Au, -1 = Cu",
+    "c": "fraction of spin-up sites",
+    "dmu": "mu_Au - mu_Cu [eV]",
+    "H": "H(s) = E(s) - (dmu/2) sum_i s_i",
+    "E": "mixing energy, pure limits subtracted",
+    "lattice": "fcc, 8x4x4 primitive cells, a = 3.8 A",
+    "kB": "8.617e-05 eV/K",
+    "sweeps": "published grid: dmu in [-0.2, 0.15] eV step 0.01; T in [200.0, 1200.0] K step 25.0"
+  },
+  "schema": {
+    "lnZ.npz": {
+      "T": "(nT,) the published temperature sweep [K]",
+      "n": "(N+1,) number of spin-up atoms",
+      "composition": "(N+1,) c = n/N",
+      "lnZ": "(nT, N+1) ln Z_n(T), fixed composition, ONE additive constant per isotherm, pinned by the closed form at n=0",
+      "lnZ_err": "(nT, N+1) standard error from 8 independent repeats",
+      "valid": "(nT, N+1) False where no repeat sampled that composition",
+      "f_mix": "(nT, N+1) mixing free energy [eV/atom], relative to the pure-limit tie line -- directly comparable to the published metadynamics arrays in published/",
+      "f_mix_err": "(nT, N+1) its standard error [eV/atom]",
+      "e_mean, e2_mean": "(nT, N+1) <E>, <E^2> at fixed (T, n) [eV]",
+      "warren_cowley": "(nT, N+1) first-shell short-range order",
+      "eta_mean, eta2_mean": "(nT, N+1, 3) fcc X-point order parameters; absent for an odd cell",
+      "ladder_*": "the same quantities on the full beta-uniform tempering ladder (up to 2400 K), which is what was simulated; the unprefixed arrays are its restriction to the published sweep",
+      "anchor_n, anchor_lnZ": "the closed-form values, (4,) and (4, nT)"
+    },
+    "state_points.npz": {
+      "dmu": "(nD,) [eV]",
+      "T": "(nT,) [K]",
+      "c": "(nD, nT, W) mean composition, PER WALKER",
+      "c_var": "(nD, nT, W) its variance within each walker",
+      "E, E_sq": "(nD, nT, W) mean energy and mean square [eV]",
+      "eta": "(nD, nT, W, 3) X-point order parameters",
+      "c_spread": "(nD, nT) range of the per-walker mean composition",
+      "trapped": "(nD, nT) walkers that never agreed -- plain MC has not crossed the barrier there and its average is a composition no configuration visits",
+      "saturated": "(nD, nT) every walker in the same pure state; the equilibrium really is one configuration, so zero variance is correct rather than stuck",
+      "note": "plain Metropolis, no bias and no tempering. Sample averages only -- no estimator, no anchor."
+    }
+  },
+  "routes": {
+    "multicanonical": "Wang-Landau flattening of the composition histogram, then FROZEN bias with replica exchange over a beta-uniform ladder. Gives ln Z_n(T), hence the whole dmu axis analytically.",
+    "direct_sgc": "plain semi-grand Metropolis at each published (dmu, T), many walkers. Independent of the above in algorithm and in run; where they disagree, `trapped` says why."
+  },
+  "boundaries": {
+    "system": "cuau",
+    "n_sites": 128,
+    "temperature_range": "the published sweep only, not the tempering ladder",
+    "note": "Three independent constructions.  common_tangent is the thermodynamic definition on f_mix(c, T); susceptibility is the composition jump a semi-grand-canonical simulation sees; heat_capacity is the order-disorder line the reference notebooks draw.",
+    "common_tangent": [
+      {
+        "temperature": 200.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.0042606037666683624
+      },
+      {
+        "temperature": 200.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.006057282997526437
+      },
+      {
+        "temperature": 200.0,
+        "c_left": 0.5,
+        "c_right": 0.75,
+        "depth": 0.005184355848077294
+      },
+      {
+        "temperature": 200.0,
+        "c_left": 0.75,
+        "c_right": 1.0,
+        "depth": 0.002102056188984824
+      },
+      {
+        "temperature": 225.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.004121829148115395
+      },
+      {
+        "temperature": 225.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.0059253443310093405
+      },
+      {
+        "temperature": 225.0,
+        "c_left": 0.5,
+        "c_right": 0.75,
+        "depth": 0.005029209514352227
+      },
+      {
+        "temperature": 225.0,
+        "c_left": 0.75,
+        "c_right": 1.0,
+        "depth": 0.0019075152137311233
+      },
+      {
+        "temperature": 250.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.003980420387645494
+      },
+      {
+        "temperature": 250.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.005794008043432379
+      },
+      {
+        "temperature": 250.0,
+        "c_left": 0.5,
+        "c_right": 0.75,
+        "depth": 0.004849929836161452
+      },
+      {
+        "temperature": 250.0,
+        "c_left": 0.75,
+        "c_right": 0.9921875,
+        "depth": 0.0016930347572453337
+      },
+      {
+        "temperature": 275.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.003829058451594664
+      },
+      {
+        "temperature": 275.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.005651699426180896
+      },
+      {
+        "temperature": 275.0,
+        "c_left": 0.5,
+        "c_right": 0.75,
+        "depth": 0.00466180261690512
+      },
+      {
+        "temperature": 275.0,
+        "c_left": 0.75,
+        "c_right": 0.9921875,
+        "depth": 0.0014718002101199376
+      },
+      {
+        "temperature": 300.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.00366843500393
+      },
+      {
+        "temperature": 300.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.005510722378348973
+      },
+      {
+        "temperature": 300.0,
+        "c_left": 0.5,
+        "c_right": 0.75,
+        "depth": 0.004439370086675824
+      },
+      {
+        "temperature": 300.0,
+        "c_left": 0.75,
+        "c_right": 0.984375,
+        "depth": 0.0012356632137200604
+      },
+      {
+        "temperature": 325.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.0035022092767362095
+      },
+      {
+        "temperature": 325.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.0053563842528349705
+      },
+      {
+        "temperature": 325.0,
+        "c_left": 0.5,
+        "c_right": 0.75,
+        "depth": 0.004202406344153187
+      },
+      {
+        "temperature": 325.0,
+        "c_left": 0.75,
+        "c_right": 0.96875,
+        "depth": 0.0010008610196486321
+      },
+      {
+        "temperature": 350.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.0033097509863286405
+      },
+      {
+        "temperature": 350.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.005193655864324218
+      },
+      {
+        "temperature": 350.0,
+        "c_left": 0.5,
+        "c_right": 0.75,
+        "depth": 0.003918804791141324
+      },
+      {
+        "temperature": 350.0,
+        "c_left": 0.7578125,
+        "c_right": 0.953125,
+        "depth": 0.0007640782660951334
+      },
+      {
+        "temperature": 375.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.003115611960084169
+      },
+      {
+        "temperature": 375.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.005023137095111867
+      },
+      {
+        "temperature": 375.0,
+        "c_left": 0.5,
+        "c_right": 0.7578125,
+        "depth": 0.003639914212971832
+      },
+      {
+        "temperature": 375.0,
+        "c_left": 0.7578125,
+        "c_right": 0.9375,
+        "depth": 0.0005572944222074321
+      },
+      {
+        "temperature": 400.0,
+        "c_left": 0.0,
+        "c_right": 0.25,
+        "depth": 0.0028928153434246984
+      },
+      {
+        "temperature": 400.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.0048341525126421245
+      },
+      {
+        "temperature": 400.0,
+        "c_left": 0.5,
+        "c_right": 0.7578125,
+        "depth": 0.0033267004447063257
+      },
+      {
+        "temperature": 400.0,
+        "c_left": 0.7578125,
+        "c_right": 0.9140625,
+        "depth": 0.00034747741794532994
+      },
+      {
+        "temperature": 425.0,
+        "c_left": 0.0078125,
+        "c_right": 0.25,
+        "depth": 0.0026912932319638795
+      },
+      {
+        "temperature": 425.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.0046441515606922695
+      },
+      {
+        "temperature": 425.0,
+        "c_left": 0.5,
+        "c_right": 0.890625,
+        "depth": 0.0031099843077557164
+      },
+      {
+        "temperature": 450.0,
+        "c_left": 0.0078125,
+        "c_right": 0.25,
+        "depth": 0.002469525760729202
+      },
+      {
+        "temperature": 450.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.004426434005955965
+      },
+      {
+        "temperature": 450.0,
+        "c_left": 0.5,
+        "c_right": 0.8671875,
+        "depth": 0.0028855585889902176
+      },
+      {
+        "temperature": 475.0,
+        "c_left": 0.015625,
+        "c_right": 0.25,
+        "depth": 0.002249604011032868
+      },
+      {
+        "temperature": 475.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.0041977525891722794
+      },
+      {
+        "temperature": 475.0,
+        "c_left": 0.5,
+        "c_right": 0.84375,
+        "depth": 0.002650080877956623
+      },
+      {
+        "temperature": 500.0,
+        "c_left": 0.0234375,
+        "c_right": 0.25,
+        "depth": 0.0020154301256933467
+      },
+      {
+        "temperature": 500.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.003930439683508799
+      },
+      {
+        "temperature": 500.0,
+        "c_left": 0.5,
+        "c_right": 0.8203125,
+        "depth": 0.0023977364577964823
+      },
+      {
+        "temperature": 525.0,
+        "c_left": 0.03125,
+        "c_right": 0.25,
+        "depth": 0.0017741119514125374
+      },
+      {
+        "temperature": 525.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.0036310212173360293
+      },
+      {
+        "temperature": 525.0,
+        "c_left": 0.5,
+        "c_right": 0.8046875,
+        "depth": 0.002130898504755615
+      },
+      {
+        "temperature": 550.0,
+        "c_left": 0.0390625,
+        "c_right": 0.25,
+        "depth": 0.00153913043117989
+      },
+      {
+        "temperature": 550.0,
+        "c_left": 0.25,
+        "c_right": 0.5,
+        "depth": 0.0032932185877848352
+      },
+      {
+        "temperature": 550.0,
+        "c_left": 0.5,
+        "c_right": 0.78125,
+        "depth": 0.0018402419834824511
+      },
+      {
+        "temperature": 575.0,
+        "c_left": 0.0390625,
+        "c_right": 0.2421875,
+        "depth": 0.0013307579856116566
+      },
+      {
+        "temperature": 575.0,
+        "c_left": 0.2578125,
+        "c_right": 0.5,
+        "depth": 0.0028930131688419056
+      },
+      {
+        "temperature": 575.0,
+        "c_left": 0.5,
+        "c_right": 0.7578125,
+        "depth": 0.0015601492027789259
+      },
+      {
+        "temperature": 600.0,
+        "c_left": 0.0546875,
+        "c_right": 0.2421875,
+        "depth": 0.0011237073433590927
+      },
+      {
+        "temperature": 600.0,
+        "c_left": 0.2578125,
+        "c_right": 0.5,
+        "depth": 0.00246663958031567
+      },
+      {
+        "temperature": 600.0,
+        "c_left": 0.5,
+        "c_right": 0.71875,
+        "depth": 0.0012489106449078968
+      },
+      {
+        "temperature": 625.0,
+        "c_left": 0.0625,
+        "c_right": 0.2421875,
+        "depth": 0.0009165194301584759
+      },
+      {
+        "temperature": 625.0,
+        "c_left": 0.2578125,
+        "c_right": 0.5,
+        "depth": 0.0019343646387935953
+      },
+      {
+        "temperature": 625.0,
+        "c_left": 0.5,
+        "c_right": 0.6875,
+        "depth": 0.0009313730254445346
+      },
+      {
+        "temperature": 650.0,
+        "c_left": 0.078125,
+        "c_right": 0.2421875,
+        "depth": 0.0007267970124864298
+      },
+      {
+        "temperature": 650.0,
+        "c_left": 0.265625,
+        "c_right": 0.4921875,
+        "depth": 0.0013083932773570728
+      },
+      {
+        "temperature": 650.0,
+        "c_left": 0.5,
+        "c_right": 0.65625,
+        "depth": 0.0005999156199021569
+      },
+      {
+        "temperature": 675.0,
+        "c_left": 0.09375,
+        "c_right": 0.2421875,
+        "depth": 0.0005325587473564049
+      },
+      {
+        "temperature": 675.0,
+        "c_left": 0.2734375,
+        "c_right": 0.4921875,
+        "depth": 0.0006492630451767206
+      },
+      {
+        "temperature": 675.0,
+        "c_left": 0.5,
+        "c_right": 0.609375,
+        "depth": 0.00027729254293355765
+      },
+      {
+        "temperature": 700.0,
+        "c_left": 0.109375,
+        "c_right": 0.234375,
+        "depth": 0.0003654237299097751
+      },
+      {
+        "temperature": 700.0,
+        "c_left": 0.28125,
+        "c_right": 0.4296875,
+        "depth": 0.000203497404434351
+      },
+      {
+        "temperature": 725.0,
+        "c_left": 0.1328125,
+        "c_right": 0.234375,
+        "depth": 0.00023137507787155537
+      },
+      {
+        "temperature": 725.0,
+        "c_left": 0.28125,
+        "c_right": 0.3828125,
+        "depth": 9.10893031048493e-05
+      },
+      {
+        "temperature": 750.0,
+        "c_left": 0.15625,
+        "c_right": 0.234375,
+        "depth": 0.00010517028049697799
+      }
+    ],
+    "susceptibility": [
+      {
+        "temperature": 200.0,
+        "dmu": -0.14,
+        "c_left": 2.933746378654892e-05,
+        "c_right": 0.24998896949316815,
+        "c_mid": 0.0020764087939762954,
+        "dc_ddmu": 7.458841033252229
+      },
+      {
+        "temperature": 200.0,
+        "dmu": -0.01,
+        "c_left": 0.2500007567487517,
+        "c_right": 0.4999993671545572,
+        "c_mid": 0.2598610353825355,
+        "dc_ddmu": 35.17049234225899
+      },
+      {
+        "temperature": 200.0,
+        "dmu": 0.07,
+        "c_left": 0.500002149029652,
+        "c_right": 0.9976414032208121,
+        "c_mid": 0.6395351620896732,
+        "dc_ddmu": 230.1640103534545
+      },
+      {
+        "temperature": 225.0,
+        "dmu": -0.14,
+        "c_left": 9.395837061593861e-05,
+        "c_right": 0.249966723289761,
+        "c_mid": 0.004219096915814329,
+        "dc_ddmu": 13.192015423481232
+      },
+      {
+        "temperature": 225.0,
+        "dmu": -0.01,
+        "c_left": 0.25000346405657287,
+        "c_right": 0.49999720984238244,
+        "c_mid": 0.2644566080780242,
+        "dc_ddmu": 44.94259224990323
+      },
+      {
+        "temperature": 225.0,
+        "dmu": 0.07,
+        "c_left": 0.5000083470177888,
+        "c_right": 0.9952663713740492,
+        "c_mid": 0.6377120331791174,
+        "dc_ddmu": 206.47919967915666
+      },
+      {
+        "temperature": 250.0,
+        "dmu": -0.14,
+        "c_left": 0.00023355023949896432,
+        "c_right": 0.24991541147943555,
+        "c_mid": 0.006995401388757413,
+        "dc_ddmu": 19.14305253213724
+      },
+      {
+        "temperature": 250.0,
+        "dmu": -0.01,
+        "c_left": 0.2500117758507699,
+        "c_right": 0.49999078602746255,
+        "c_mid": 0.2692679171100825,
+        "dc_ddmu": 52.776519284018306
+      },
+      {
+        "temperature": 250.0,
+        "dmu": 0.07,
+        "c_left": 0.5000249691878879,
+        "c_right": 0.9913047225465754,
+        "c_mid": 0.6431104690534444,
+        "dc_ddmu": 185.98953435572065
+      },
+      {
+        "temperature": 275.0,
+        "dmu": -0.14,
+        "c_left": 0.0005073407343940569,
+        "c_right": 0.24982436939408803,
+        "c_mid": 0.010996764700548976,
+        "dc_ddmu": 26.406092815683316
+      },
+      {
+        "temperature": 275.0,
+        "dmu": -0.01,
+        "c_left": 0.2500310825405514,
+        "c_right": 0.4999760101452888,
+        "c_mid": 0.2744787943413188,
+        "dc_ddmu": 59.51431899514373
+      },
+      {
+        "temperature": 275.0,
+        "dmu": 0.07,
+        "c_left": 0.5000622428516658,
+        "c_right": 0.9859505203587416,
+        "c_mid": 0.6517859227294477,
+        "dc_ddmu": 168.58680557012266
+      },
+      {
+        "temperature": 300.0,
+        "dmu": -0.14,
+        "c_left": 0.0009601936961069651,
+        "c_right": 0.249660643891815,
+        "c_mid": 0.01484360050031849,
+        "dc_ddmu": 31.262012212438826
+      },
+      {
+        "temperature": 300.0,
+        "dmu": -0.01,
+        "c_left": 0.2500735188577748,
+        "c_right": 0.4999452026238881,
+        "c_mid": 0.28040384237652927,
+        "dc_ddmu": 65.85849398200057
+      },
+      {
+        "temperature": 300.0,
+        "dmu": 0.07,
+        "c_left": 0.5001326411661675,
+        "c_right": 0.9789934490649294,
+        "c_mid": 0.6653384950264881,
+        "dc_ddmu": 154.42016639484706
+      },
+      {
+        "temperature": 325.0,
+        "dmu": -0.14,
+        "c_left": 0.0016453420539914775,
+        "c_right": 0.24942363815943988,
+        "c_mid": 0.018910075273676573,
+        "dc_ddmu": 34.91386714859136
+      },
+      {
+        "temperature": 325.0,
+        "dmu": -0.01,
+        "c_left": 0.25014770849507206,
+        "c_right": 0.4998901102497923,
+        "c_mid": 0.2845787190880967,
+        "dc_ddmu": 67.62741235715825
+      },
+      {
+        "temperature": 325.0,
+        "dmu": 0.07,
+        "c_left": 0.5002624040884707,
+        "c_right": 0.9703405630834613,
+        "c_mid": 0.6905104964965203,
+        "dc_ddmu": 143.66556568971004
+      },
+      {
+        "temperature": 350.0,
+        "dmu": -0.14,
+        "c_left": 0.0026835633971962155,
+        "c_right": 0.24902695999573526,
+        "c_mid": 0.02288259344335055,
+        "dc_ddmu": 36.736966443024045
+      },
+      {
+        "temperature": 350.0,
+        "dmu": -0.01,
+        "c_left": 0.2502772389902757,
+        "c_right": 0.49980272186515395,
+        "c_mid": 0.2908573358079863,
+        "dc_ddmu": 71.74909912331806
+      },
+      {
+        "temperature": 350.0,
+        "dmu": 0.07,
+        "c_left": 0.5004631429832064,
+        "c_right": 0.960174000076605,
+        "c_mid": 0.734254817204316,
+        "dc_ddmu": 142.49298720635028
+      },
+      {
+        "temperature": 375.0,
+        "dmu": -0.14,
+        "c_left": 0.004098637583591037,
+        "c_right": 0.2485080518925095,
+        "c_mid": 0.0263580054400369,
+        "dc_ddmu": 36.535805345299046
+      },
+      {
+        "temperature": 375.0,
+        "dmu": -0.01,
+        "c_left": 0.2504643335505725,
+        "c_right": 0.49966363269064923,
+        "c_mid": 0.2943432713453189,
+        "dc_ddmu": 71.05154816032612
+      },
+      {
+        "temperature": 375.0,
+        "dmu": 0.07,
+        "c_left": 0.5008049798017257,
+        "c_right": 0.9490260262787439,
+        "c_mid": 0.8041284056111266,
+        "dc_ddmu": 115.87694090800103
+      },
+      {
+        "temperature": 400.0,
+        "dmu": -0.14,
+        "c_left": 0.005911352826347062,
+        "c_right": 0.24772185317018616,
+        "c_mid": 0.028237045065482858,
+        "dc_ddmu": 33.0595509199819
+      },
+      {
+        "temperature": 400.0,
+        "dmu": -0.01,
+        "c_left": 0.2507784496909697,
+        "c_right": 0.4994612152368222,
+        "c_mid": 0.29932395185030286,
+        "dc_ddmu": 71.69629500437092
+      },
+      {
+        "temperature": 400.0,
+        "dmu": 0.07,
+        "c_left": 0.5013494794269793,
+        "c_right": 0.9371239367083005,
+        "c_mid": 0.8588155989332251,
+        "dc_ddmu": 54.54418004304892
+      },
+      {
+        "temperature": 425.0,
+        "dmu": -0.14,
+        "c_left": 0.008232949385481334,
+        "c_right": 0.24664510285269936,
+        "c_mid": 0.030399316047690333,
+        "dc_ddmu": 29.461877150593335
+      },
+      {
+        "temperature": 425.0,
+        "dmu": -0.01,
+        "c_left": 0.25115717374880053,
+        "c_right": 0.4992102231258211,
+        "c_mid": 0.3037029992263351,
+        "dc_ddmu": 71.2065286088829
+      },
+      {
+        "temperature": 425.0,
+        "dmu": 0.07,
+        "c_left": 0.5024366710037208,
+        "c_right": 0.9251125725286241,
+        "c_mid": 0.8755940291098043,
+        "dc_ddmu": 21.600105088768274
+      },
+      {
+        "temperature": 450.0,
+        "dmu": -0.14,
+        "c_left": 0.011046106409179603,
+        "c_right": 0.24489277460915654,
+        "c_mid": 0.03213255864728179,
+        "dc_ddmu": 24.86110794354237
+      },
+      {
+        "temperature": 450.0,
+        "dmu": -0.01,
+        "c_left": 0.25169534495146295,
+        "c_right": 0.49882535523375315,
+        "c_mid": 0.306806362473245,
+        "dc_ddmu": 69.06903296167155
+      },
+      {
+        "temperature": 450.0,
+        "dmu": 0.07,
+        "c_left": 0.5072290886565904,
+        "c_right": 0.9131080539809019,
+        "c_mid": 0.8731566289412385,
+        "dc_ddmu": 11.664052758955785
+      },
+      {
+        "temperature": 475.0,
+        "dmu": -0.14,
+        "c_left": 0.014429542262317916,
+        "c_right": 0.2421318365384544,
+        "c_mid": 0.03380380237681646,
+        "dc_ddmu": 19.851978914822347
+      },
+      {
+        "temperature": 475.0,
+        "dmu": -0.01,
+        "c_left": 0.2523811523003898,
+        "c_right": 0.49839331603636605,
+        "c_mid": 0.3107025203840419,
+        "dc_ddmu": 67.47019697877086
+      },
+      {
+        "temperature": 475.0,
+        "dmu": 0.06,
+        "c_left": 0.5024821627474892,
+        "c_right": 0.8654266164696505,
+        "c_mid": 0.542280965420052,
+        "dc_ddmu": 66.93837122715748
+      },
+      {
+        "temperature": 500.0,
+        "dmu": -0.14,
+        "c_left": 0.0182551082413295,
+        "c_right": 0.23711932625858223,
+        "c_mid": 0.0357940859463419,
+        "dc_ddmu": 15.158316398467223
+      },
+      {
+        "temperature": 500.0,
+        "dmu": -0.01,
+        "c_left": 0.2533730360596237,
+        "c_right": 0.49783979367797626,
+        "c_mid": 0.3147648444639309,
+        "dc_ddmu": 65.52797871345382
+      },
+      {
+        "temperature": 500.0,
+        "dmu": 0.06,
+        "c_left": 0.5035799052860447,
+        "c_right": 0.8557466396127191,
+        "c_mid": 0.6864152793049023,
+        "dc_ddmu": 140.80708217239032
+      },
+      {
+        "temperature": 525.0,
+        "dmu": -0.13,
+        "c_left": 0.03912364849392007,
+        "c_right": 0.24440490974164897,
+        "c_mid": 0.22847709200881172,
+        "dc_ddmu": 14.845729044810664
+      },
+      {
+        "temperature": 525.0,
+        "dmu": -0.01,
+        "c_left": 0.2545370960607011,
+        "c_right": 0.4970277596554,
+        "c_mid": 0.3172200495018342,
+        "dc_ddmu": 62.22290212090661
+      },
+      {
+        "temperature": 525.0,
+        "dmu": 0.06,
+        "c_left": 0.5064266423669499,
+        "c_right": 0.8455973347437592,
+        "c_mid": 0.7844272396367943,
+        "dc_ddmu": 40.30148235920745
+      },
+      {
+        "temperature": 550.0,
+        "dmu": -0.13,
+        "c_left": 0.043150402140232566,
+        "c_right": 0.24279565130854203,
+        "c_mid": 0.2134795696691949,
+        "dc_ddmu": 24.042341176076317
+      },
+      {
+        "temperature": 550.0,
+        "dmu": -0.01,
+        "c_left": 0.2560981584229583,
+        "c_right": 0.49600786553384885,
+        "c_mid": 0.3200911063501205,
+        "dc_ddmu": 58.87923692351105
+      },
+      {
+        "temperature": 550.0,
+        "dmu": 0.05,
+        "c_left": 0.504126595768074,
+        "c_right": 0.793769086302313,
+        "c_mid": 0.5262339598220384,
+        "dc_ddmu": 24.291197515331486
+      },
+      {
+        "temperature": 575.0,
+        "dmu": -0.13,
+        "c_left": 0.04821124541725033,
+        "c_right": 0.24052094655921386,
+        "c_mid": 0.19062879691655066,
+        "dc_ddmu": 32.892381940316305
+      },
+      {
+        "temperature": 575.0,
+        "dmu": -0.01,
+        "c_left": 0.2580349674970247,
+        "c_right": 0.4946875644168468,
+        "c_mid": 0.3225401010339734,
+        "dc_ddmu": 54.98241237762244
+      },
+      {
+        "temperature": 575.0,
+        "dmu": 0.05,
+        "c_left": 0.5067811069180939,
+        "c_right": 0.7868885287271782,
+        "c_mid": 0.6272902493503302,
+        "dc_ddmu": 74.0997208695842
+      },
+      {
+        "temperature": 600.0,
+        "dmu": -0.13,
+        "c_left": 0.05396685230183838,
+        "c_right": 0.23667728670380891,
+        "c_mid": 0.1620322692163471,
+        "dc_ddmu": 35.47101828039583
+      },
+      {
+        "temperature": 600.0,
+        "dmu": -0.01,
+        "c_left": 0.26061490915031604,
+        "c_right": 0.4929489644198536,
+        "c_mid": 0.3253221568612596,
+        "dc_ddmu": 50.6616099005555
+      },
+      {
+        "temperature": 600.0,
+        "dmu": 0.05,
+        "c_left": 0.5207932065520389,
+        "c_right": 0.7784217928831113,
+        "c_mid": 0.71269996275764,
+        "dc_ddmu": 29.280655005573067
+      },
+      {
+        "temperature": 625.0,
+        "dmu": -0.13,
+        "c_left": 0.0603488298110858,
+        "c_right": 0.22970606273283678,
+        "c_mid": 0.1367388982838113,
+        "dc_ddmu": 29.524332993435902
+      },
+      {
+        "temperature": 625.0,
+        "dmu": -0.01,
+        "c_left": 0.263982631911814,
+        "c_right": 0.490300385277717,
+        "c_mid": 0.33023139021142384,
+        "dc_ddmu": 46.38015945935065
+      },
+      {
+        "temperature": 625.0,
+        "dmu": 0.04,
+        "c_left": 0.5096143120086374,
+        "c_right": 0.7231381535035625,
+        "c_mid": 0.5878038941574133,
+        "dc_ddmu": 36.932930762627514
+      },
+      {
+        "temperature": 650.0,
+        "dmu": -0.13,
+        "c_left": 0.06714115554735191,
+        "c_right": 0.2171711025853546,
+        "c_mid": 0.11988226848633782,
+        "dc_ddmu": 20.5279985211917
+      },
+      {
+        "temperature": 650.0,
+        "dmu": -0.01,
+        "c_left": 0.2688304990200535,
+        "c_right": 0.485606609222794,
+        "c_mid": 0.33601197996923327,
+        "dc_ddmu": 40.40186890055447
+      },
+      {
+        "temperature": 650.0,
+        "dmu": 0.04,
+        "c_left": 0.5384923164550082,
+        "c_right": 0.7186362960843787,
+        "c_mid": 0.6520032261787558,
+        "dc_ddmu": 20.541208901736443
+      },
+      {
+        "temperature": 675.0,
+        "dmu": -0.12,
+        "c_left": 0.11256223547722978,
+        "c_right": 0.2328940775149459,
+        "c_mid": 0.19792789385783388,
+        "dc_ddmu": 13.782859321663341
+      },
+      {
+        "temperature": 675.0,
+        "dmu": -0.01,
+        "c_left": 0.2772252156863465,
+        "c_right": 0.4775053789313285,
+        "c_mid": 0.35183337434874656,
+        "dc_ddmu": 33.766842517677695
+      },
+      {
+        "temperature": 675.0,
+        "dmu": 0.03,
+        "c_left": 0.524849745648496,
+        "c_right": 0.6630144942401801,
+        "c_mid": 0.5904438415945383,
+        "dc_ddmu": 16.751569719212043
+      },
+      {
+        "temperature": 700.0,
+        "dmu": -0.12,
+        "c_left": 0.11093457576029797,
+        "c_right": 0.2242982470950513,
+        "c_mid": 0.17655467735285596,
+        "dc_ddmu": 14.377807060834426
+      },
+      {
+        "temperature": 700.0,
+        "dmu": -0.01,
+        "c_left": 0.293962285148172,
+        "c_right": 0.4707590447360319,
+        "c_mid": 0.3813785365506803,
+        "dc_ddmu": 25.173612266053347
+      },
+      {
+        "temperature": 700.0,
+        "dmu": 0.03,
+        "c_left": 0.5523830939879004,
+        "c_right": 0.6611562557583248,
+        "c_mid": 0.6090605196309619,
+        "dc_ddmu": 11.291308521151167
+      },
+      {
+        "temperature": 725.0,
+        "dmu": -0.12,
+        "c_left": 0.11318498928806836,
+        "c_right": 0.2108324724164174,
+        "c_mid": 0.16042332261727346,
+        "dc_ddmu": 11.590848563964999
+      },
+      {
+        "temperature": 725.0,
+        "dmu": -0.01,
+        "c_left": 0.32628611668529145,
+        "c_right": 0.4720788395968644,
+        "c_mid": 0.41010961762111714,
+        "dc_ddmu": 16.066857530929305
+      },
+      {
+        "temperature": 725.0,
+        "dmu": 0.02,
+        "c_left": 0.5166749517852869,
+        "c_right": 0.6110487284643603,
+        "c_mid": 0.5626406547315265,
+        "dc_ddmu": 9.602015013283358
+      },
+      {
+        "temperature": 750.0,
+        "dmu": -0.12,
+        "c_left": 0.11711483726189181,
+        "c_right": 0.19582920086518874,
+        "c_mid": 0.15220472207223568,
+        "dc_ddmu": 8.511547098998948
+      },
+      {
+        "temperature": 750.0,
+        "dmu": -0.02,
+        "c_left": 0.30632691056201333,
+        "c_right": 0.42608439221149,
+        "c_mid": 0.3624908537978073,
+        "dc_ddmu": 13.48704764709024
+      },
+      {
+        "temperature": 750.0,
+        "dmu": 0.02,
+        "c_left": 0.5200174980389576,
+        "c_right": 0.6094598287362445,
+        "c_mid": 0.5646067315327278,
+        "dc_ddmu": 8.991716640123826
+      },
+      {
+        "temperature": 775.0,
+        "dmu": -0.02,
+        "c_left": 0.33392041102028747,
+        "c_right": 0.4347442992989805,
+        "c_mid": 0.38545707129109613,
+        "dc_ddmu": 10.462234973010162
+      }
+    ],
+    "heat_capacity": [
+      {
+        "dmu": -0.19,
+        "temperature": 1175.0,
+        "heat_capacity": 0.00023044404330439005,
+        "c_left": 0.1089522252937388,
+        "c_right": 0.13189503916812675
+      },
+      {
+        "dmu": -0.18,
+        "temperature": 1175.0,
+        "heat_capacity": 0.000274916337228562,
+        "c_left": 0.11998025201724348,
+        "c_right": 0.14472279088124643
+      },
+      {
+        "dmu": -0.17,
+        "temperature": 1025.0,
+        "heat_capacity": 0.0003401804955757956,
+        "c_left": 0.10233977656311385,
+        "c_right": 0.12825473951385918
+      },
+      {
+        "dmu": -0.16,
+        "temperature": 925.0,
+        "heat_capacity": 0.000448360180519369,
+        "c_left": 0.0929861207054098,
+        "c_right": 0.12082781414358318
+      },
+      {
+        "dmu": -0.15,
+        "temperature": 800.0,
+        "heat_capacity": 0.0006874931115458178,
+        "c_left": 0.07648937349235294,
+        "c_right": 0.10719083569186441
+      },
+      {
+        "dmu": -0.14,
+        "temperature": 325.0,
+        "heat_capacity": 0.12988218064211413,
+        "c_left": 0.0016453420539914775,
+        "c_right": 0.24942363815943988
+      },
+      {
+        "dmu": -0.13,
+        "temperature": 600.0,
+        "heat_capacity": 0.1127693045230909,
+        "c_left": 0.05396685230183838,
+        "c_right": 0.23667728670380891
+      },
+      {
+        "dmu": -0.12,
+        "temperature": 675.0,
+        "heat_capacity": 0.061355492586825607,
+        "c_left": 0.11256223547722978,
+        "c_right": 0.2328940775149459
+      },
+      {
+        "dmu": -0.11,
+        "temperature": 725.0,
+        "heat_capacity": 0.044031869200999746,
+        "c_left": 0.16042332261727346,
+        "c_right": 0.23319821470349414
+      },
+      {
+        "dmu": -0.1,
+        "temperature": 775.0,
+        "heat_capacity": 0.03719987536078856,
+        "c_left": 0.184631549871257,
+        "c_right": 0.2336847474877573
+      },
+      {
+        "dmu": -0.09,
+        "temperature": 800.0,
+        "heat_capacity": 0.032010241885705275,
+        "c_left": 0.2068945590150469,
+        "c_right": 0.24348449932259203
+      },
+      {
+        "dmu": -0.08,
+        "temperature": 800.0,
+        "heat_capacity": 0.03061716007927659,
+        "c_left": 0.2281744541289204,
+        "c_right": 0.256039607097847
+      },
+      {
+        "dmu": -0.07,
+        "temperature": 800.0,
+        "heat_capacity": 0.029305699235754906,
+        "c_left": 0.24348449932259203,
+        "c_right": 0.26936030681458045
+      },
+      {
+        "dmu": -0.06,
+        "temperature": 800.0,
+        "heat_capacity": 0.02928058248711831,
+        "c_left": 0.256039607097847,
+        "c_right": 0.2875169846778697
+      },
+      {
+        "dmu": -0.05,
+        "temperature": 800.0,
+        "heat_capacity": 0.029292997648477443,
+        "c_left": 0.26936030681458045,
+        "c_right": 0.3154040818609247
+      },
+      {
+        "dmu": -0.04,
+        "temperature": 775.0,
+        "heat_capacity": 0.03133546754971341,
+        "c_left": 0.2750948714358851,
+        "c_right": 0.33392041102028747
+      },
+      {
+        "dmu": -0.03,
+        "temperature": 750.0,
+        "heat_capacity": 0.03321683028685852,
+        "c_left": 0.27919793353181904,
+        "c_right": 0.3624908537978073
+      },
+      {
+        "dmu": -0.02,
+        "temperature": 725.0,
+        "heat_capacity": 0.03739100201856637,
+        "c_left": 0.28404641059502295,
+        "c_right": 0.41010961762111714
+      },
+      {
+        "dmu": -0.01,
+        "temperature": 700.0,
+        "heat_capacity": 0.04249399571368643,
+        "c_left": 0.293962285148172,
+        "c_right": 0.4707590447360319
+      },
+      {
+        "dmu": 0.0,
+        "temperature": 700.0,
+        "heat_capacity": 0.054877290829702635,
+        "c_left": 0.3813785365506803,
+        "c_right": 0.5088994725096327
+      },
+      {
+        "dmu": 0.01,
+        "temperature": 700.0,
+        "heat_capacity": 0.06215307769395624,
+        "c_left": 0.4707590447360319,
+        "c_right": 0.5523830939879004
+      },
+      {
+        "dmu": 0.02,
+        "temperature": 675.0,
+        "heat_capacity": 0.07717776476189092,
+        "c_left": 0.4999240654281376,
+        "c_right": 0.5904438415945383
+      },
+      {
+        "dmu": 0.03,
+        "temperature": 650.0,
+        "heat_capacity": 0.08414759633003464,
+        "c_left": 0.5058363955895722,
+        "c_right": 0.6520032261787558
+      },
+      {
+        "dmu": 0.04,
+        "temperature": 625.0,
+        "heat_capacity": 0.11973687029060459,
+        "c_left": 0.5096143120086374,
+        "c_right": 0.7231381535035625
+      },
+      {
+        "dmu": 0.05,
+        "temperature": 575.0,
+        "heat_capacity": 0.15837119071838043,
+        "c_left": 0.5067811069180939,
+        "c_right": 0.7868885287271782
+      },
+      {
+        "dmu": 0.06,
+        "temperature": 500.0,
+        "heat_capacity": 0.21672846050924247,
+        "c_left": 0.5035799052860447,
+        "c_right": 0.8557466396127191
+      },
+      {
+        "dmu": 0.08,
+        "temperature": 275.0,
+        "heat_capacity": 0.0017252136553084212,
+        "c_left": 0.6517859227294477,
+        "c_right": 0.991678737564702
+      },
+      {
+        "dmu": 0.09,
+        "temperature": 575.0,
+        "heat_capacity": 0.000435085684871396,
+        "c_left": 0.8585724742789652,
+        "c_right": 0.908408605273989
+      },
+      {
+        "dmu": 0.1,
+        "temperature": 675.0,
+        "heat_capacity": 0.00030660984691358706,
+        "c_left": 0.8487248654929739,
+        "c_right": 0.8932283717143225
+      },
+      {
+        "dmu": 0.11,
+        "temperature": 775.0,
+        "heat_capacity": 0.000239255431864459,
+        "c_left": 0.8401440467081821,
+        "c_right": 0.8808123011458422
+      },
+      {
+        "dmu": 0.12,
+        "temperature": 875.0,
+        "heat_capacity": 0.0001955124706243779,
+        "c_left": 0.8329150604822562,
+        "c_right": 0.870213183731619
+      },
+      {
+        "dmu": 0.13,
+        "temperature": 875.0,
+        "heat_capacity": 0.00016432904662749012,
+        "c_left": 0.8525744185417206,
+        "c_right": 0.8859904698643875
+      },
+      {
+        "dmu": 0.14,
+        "temperature": 950.0,
+        "heat_capacity": 0.00013896837825095153,
+        "c_left": 0.8509985623588416,
+        "c_right": 0.882068503338144
+      },
+      {
+        "dmu": 0.15,
+        "temperature": 1000.0,
+        "heat_capacity": 0.00012067556599388847,
+        "c_left": 0.8552948269337646,
+        "c_right": 0.8702766905080613
+      }
+    ]
+  },
+  "gates": {
+    "closed_form_anchors": {
+      "what": "ln Z_N at N = 0, 1, n_sites-1, n_sites is known exactly. N = 0 pins the additive constant; the other three are held out.",
+      "worst_held_out_residual_lnZ": 0.16747225510041847
+    },
+    "exact_enumeration": {
+      "n_sites": 16,
+      "n_configurations": 65536,
+      "max_abs_ln_z_difference": 0.06586733339021933,
+      "rms_ln_z_difference": 0.02327461251495298,
+      "max_abs_f_mix_difference_eV_per_atom": 0.00018309715491308595,
+      "closed_form_vs_enumeration": 9.325873406851315e-15,
+      "n_samples": 4000
+    },
+    "replica_exchange": {
+      "worst_rung_swap_acceptance": 0.8418202614379011,
+      "min_round_trips_per_unit": 71074,
+      "what": "a severed ladder shows a flat stretch in the fraction of up-movers and zero round trips, with nothing to compare against"
+    },
+    "independent_algorithm": {
+      "n_points": 1476,
+      "n_walkers_converged": 1411,
+      "max_abs_dc_where_walkers_agree": 0.25583006990741863,
+      "median_abs_dc_where_walkers_agree": 9.71766199875379e-05,
+      "max_abs_dc_overall": 0.3056862734572019,
+      "fraction_walkers_trapped": 0.04403794037940379,
+      "fraction_saturated": 0.0,
+      "min_walker_c_variance_unsaturated": 0.0,
+      "what": "<c>(dmu, T) from the two routes. They share only the Hamiltonian, so agreement is evidence rather than precision.",
+      "caveat": "`max_abs_dc_where_walkers_agree` can be large even though the walkers agree with each other. The spread test detects walkers landing in DIFFERENT basins; it cannot detect all of them landing in the SAME wrong one, which is what happens when the barrier is crossed early and never again. At those conditions the disagreement between the two routes is itself the signal, and the multicanonical route is the one to trust: its bias removes the composition barrier by construction, and it is the route the closed-form anchors and the exhaustive enumeration bound."
+    },
+    "vs_published_metadynamics": {
+      "status": "compared",
+      "n_temperatures": 41,
+      "max_abs_diff_eV_per_atom": 0.00043854843783424496,
+      "median_max_abs_diff_eV_per_atom": 0.00019474390138291865,
+      "max_relative_diff": 0.010720963842344155
+    },
+    "tie_line_thresholds": {
+      "our_boundaries": "00_results/phase_diagram.json uses a depth threshold of 5 sigma of the MEASURED statistical error on f_mix, per temperature. A fixed threshold is not safe: 1e-5 eV/atom is only ~1.4x the error at the hot end, and the convex-hull depth is a maximum over hundreds of noisy points, so a fixed rule manufactured tie lines up to the top of the temperature range on the 512-site cells.",
+      "vs_published": "the comparison in comparison_to_published.json instead uses the source notebooks' own rule -- a gap wider than 7 composition steps, ~0.055 of the axis -- applied identically to both arrays, which is what makes it like-for-like.",
+      "notebook_rule_steps_for_this_cell": 7
+    },
+    "vs_published_boundaries": {
+      "status": "compared",
+      "gap_threshold_steps": 7,
+      "max_boundary_composition_diff": 0.015625
+    },
+    "statistical_error": {
+      "median_lnZ_standard_error": 0.015912631944983956,
+      "median_f_mix_standard_error_eV_per_atom": 4.7414951940588895e-06,
+      "from": "the scatter across 8 independent repeats"
+    }
+  },
+  "configurations": {
+    "where": "02_sgc_merged/merged_direct_mc.npz, key `snapshots`",
+    "shape": "(n_snapshots, nD, nT, W, ceil(N/8)) uint8, bit-packed",
+    "decode": "potential.load_target('potential').unpack(packed)",
+    "bit": "1 = spin +1 = Au",
+    "energies": "02_sgc_merged/snapshot_energies.npz, same leading shape"
+  }
+}

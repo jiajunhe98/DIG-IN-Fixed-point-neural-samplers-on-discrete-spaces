@@ -1,0 +1,23 @@
+# Baseline: LEAPS (PINN objective, locally equivariant conv net)
+name: leaps
+delta_t: 0.01
+starting_k: 1
+n_anneal: 2000
+quadratic_anneal: true
+n_walkers: 128
+loss_batch: 256
+buffer_cycle: 20
+buffer_size: 50
+mcmc_sweeps: 1
+lr: 3e-4
+lr_gamma: 0.995
+lr_step: 1000
+grad_clip: 0.0
+f_hidden: 200
+anneal_steps: 0
+anneal_start: 0.5
+model:                  # locally equivariant net (ignores the model group)
+  channels: 20
+  kernel_sizes: [3, 5, 7, 9]
+rate_clamp: 10.0        # cap |R| to keep FK weights stable off-manifold
+eval_chunk: 512         # samples per evaluation rollout (memory at large D)

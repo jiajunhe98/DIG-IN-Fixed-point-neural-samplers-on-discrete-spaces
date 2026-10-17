@@ -1,0 +1,14 @@
+# 16x16 3-state Potts below the transition, beta = 1.2 (beta_c = 1.005).
+#
+# The ordered phase has q = 3 symmetry-related modes of equal weight.  Both the
+# energy and the usual order parameter m = (q f_max - 1)/(q - 1) are S_q
+# invariant, so a sampler that keeps only one mode reports the same values as a
+# correct one: read `mode_min` (the smallest batch share of a majority state,
+# 1/3 when balanced, 0 when collapsed), not the energy.
+#
+# beta = 1.2 is the point at which MDNS is reported to collapse onto one mode.
+name: potts
+lattice_shape: [16, 16]
+q: 3
+beta: 1.2
+J: 1.0

@@ -1,0 +1,35 @@
+# FrOGS (Min, Hofgard, Smidt 2026): a conditioned autoregressive prior in
+# front of LEAPS transport, trained jointly under one PINN residual.
+#
+# Only run at the small cells.  The corrector needs Delta U for every
+# single-site move, and the prior's share of it costs D * (N-1) forward
+# passes per state because an autoregressive model has no shortcut for a
+# one-site mutation.  The paper reports 125-site AgPd and 128-site CuAu for
+# the same reason.
+name: frogs
+delta_t: 0.02           # 50 CTMC steps over the path
+starting_k: 1
+n_anneal: 2000
+quadratic_anneal: true
+n_walkers: 64
+loss_batch: 64
+buffer_cycle: 20
+buffer_size: 20
+rate_clamp: 10.0
+lr: 3e-4                # transport and free-energy head
+prior_lr: 1e-3          # the autoregressive prior
+lr_gamma: 0.995
+lr_step: 1000
+grad_clip: 1.0
+f_hidden: 200
+anneal_steps: 0
+anneal_start: 0.5
+eval_chunk: 128
+flip_chunk: 8192        # mutated configurations scored per prior pass
+model:                  # locally equivariant transport net
+  channels: 24
+  kernel_sizes: [3, 5]
+prior:                  # the autoregressive prior (PixelCNN, as SEGAL)
+  channels: 64
+  n_blocks: 4
+  kernel_size: 3

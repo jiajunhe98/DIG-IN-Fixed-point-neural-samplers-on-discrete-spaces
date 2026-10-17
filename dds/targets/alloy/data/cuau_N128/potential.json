@@ -1,0 +1,52 @@
+{
+  "system": "cuau",
+  "kind": "discrete",
+  "degrees_of_freedom": "one binary spin per lattice site; no positions, no volume, no particle-number channel",
+  "state_space": "2^128 configurations",
+  "contrast": "the sibling packages cuni_N256 and cuag_N108 in the same directory are HYBRID: their state is (u, w, s) with continuous displacements u and log-volume w alongside the species labels s.  Here the state is s alone.",
+  "npz": "cluster_tables.npz",
+  "n_sites": 128,
+  "size": [
+    8,
+    4,
+    4
+  ],
+  "lattice": "fcc",
+  "a": 3.8,
+  "spin_up_element": "Au",
+  "spin_down_element": "Cu",
+  "mixing_energy": true,
+  "max_cluster_dia": [
+    6.0,
+    4.5,
+    4.5
+  ],
+  "cutoff_rule": "largest pairwise distance in the figure (the rule of the CLEASE version that fitted these ECIs; current CLEASE uses twice the distance from the figure's centroid and would enumerate a different, smaller orbit set)",
+  "n_eci": 11,
+  "n_figures": 8128,
+  "n_figures_per_site": 180,
+  "eci_file": "eci_cuau.json",
+  "eci_sha256": "736b07d76bfa3672fa51a8b2c1139a3f4899944a413e88fe4699f04ad845d986",
+  "eci_source": "Damewood, Schwalbe-Koda, Gomez-Bombarelli, npj Comput. Mater. 8, 61 (2022); code release learningmatter-mit/Segal",
+  "kB_eV_per_K": 8.617e-05,
+  "convention": "s_i = +1 is the spin-up element; c = fraction of spin-up sites; H(s) = E(s) - (dmu/2) sum_i s_i, so dmu is the physical chemical-potential difference",
+  "clease_agreement_at_packaging": {
+    "n_configs": 66,
+    "max_abs_energy_error_eV": 2.886579864025407e-15,
+    "max_rel_energy_error": 1.6541128130501998e-14,
+    "max_cf_error": 0.0,
+    "max_multilinear_diff_error_eV": 7.28583859910259e-17,
+    "max_multilinear_diff_magnitude_eV": 0.00842925115679155,
+    "energy_range_eV": [
+      -0.3466047358901192,
+      1.1307410070162405
+    ]
+  },
+  "temperature_K_ref": 700.0,
+  "dmu_ref": 0.0,
+  "published_ground_states": {
+    "L1_2 Cu3Au": -0.034167194236895584,
+    "L1_0 CuAu": -0.03618248807455891,
+    "L1_2 CuAu3": -0.018754351039661065
+  }
+}
