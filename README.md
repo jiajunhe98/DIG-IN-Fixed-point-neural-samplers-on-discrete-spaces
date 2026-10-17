@@ -228,7 +228,7 @@ adapted from [DiffUCO](https://github.com/ml-jku/DiffUCO).
 ```bibtex
 @article{he2026fixedpoint,
   title   = {Fixed-point neural samplers on discrete spaces},
-  author  = {He, Jiajun and Blessing, Denis and Chen, Mouyang
+  author  = {He, Jiajun and Blessing, Denis and Cheng, Mouyang
              and Du, Yuanqi and Domingo-Enrich, Carles},
   journal = {arXiv preprint arXiv:2610.01739},
   year    = {2026}
