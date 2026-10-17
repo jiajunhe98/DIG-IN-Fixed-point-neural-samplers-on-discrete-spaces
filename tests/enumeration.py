@@ -6,8 +6,8 @@ import torch
 import torch.nn.functional as F
 from torch import Tensor
 
-from dds.methods.dsi.interpolant import MixtureInterpolant
-from dds.targets.base import DiscreteTarget
+from dig_in.methods.dsi.interpolant import MixtureInterpolant
+from dig_in.targets.base import DiscreteTarget
 
 
 def all_states(target: DiscreteTarget) -> tuple[Tensor, Tensor]:

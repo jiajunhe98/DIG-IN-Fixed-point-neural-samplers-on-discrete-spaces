@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 import torch
 
-from dds.targets import IsingModel
-from dds.utils import metrics as M
+from dig_in.targets import IsingModel
+from dig_in.utils import metrics as M
 
 
 @pytest.fixture(autouse=True)
@@ -67,9 +67,9 @@ def test_local_inconsistency_is_lowest_on_target_samples():
     conditionals, so exact samples must score better than uniform noise."""
     import torch
 
-    from dds.targets import IsingModel
-    from dds.targets.ising.mcmc import IsingMCMC
-    from dds.utils.metrics import local_inconsistency
+    from dig_in.targets import IsingModel
+    from dig_in.targets.ising.mcmc import IsingMCMC
+    from dig_in.utils.metrics import local_inconsistency
 
     torch.manual_seed(0)
     target = IsingModel((8, 8), beta=0.6)          # ordered: far from uniform

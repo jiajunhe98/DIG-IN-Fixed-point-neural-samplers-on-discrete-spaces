@@ -44,7 +44,7 @@ wandb:
   mode: null            # null = online when WANDB_API_KEY is set, else
                         # offline.  Offline still records everything; sync
                         # afterwards with `wandb sync <run>/wandb/offline-*`
-  project: discrete-diffusion-samplers
+  project: dig-in
   entity: null
   name: null
   tags: []

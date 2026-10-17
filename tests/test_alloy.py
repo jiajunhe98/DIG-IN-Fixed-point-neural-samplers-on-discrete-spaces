@@ -11,10 +11,10 @@ import numpy as np
 import pytest
 import torch
 
-from dds.methods import build_method
-from dds.models import build_model
-from dds.targets.alloy import SYSTEMS, AlloyFamily
-from dds.utils.acquisition import FisherAcquisition, mixed_cond
+from dig_in.methods import build_method
+from dig_in.models import build_model
+from dig_in.targets.alloy import SYSTEMS, AlloyFamily
+from dig_in.utils.acquisition import FisherAcquisition, mixed_cond
 
 SMALL = {"name": "rescnn", "hidden_size": 16, "n_blocks": 5}
 
@@ -78,7 +78,7 @@ def test_chemical_potential_enters_with_the_packaged_factor_of_two(family):
 def test_exact_log_Z_matches_the_fixed_composition_sum(family):
     """ln Z(T, dmu) = logsumexp_n [ ln Z_n(T) + beta (dmu/2)(2n - N) ], and at
     a packaged temperature no interpolation is involved."""
-    from dds.targets.alloy.potential import KB_EV_PER_K
+    from dig_in.targets.alloy.potential import KB_EV_PER_K
 
     T = float(family._ref["lnZ_T"][3])
     for dmu in (0.0, 0.13, -0.2):
@@ -260,7 +260,7 @@ def test_amortized_methods_train_and_sample_at_a_state_point(name, cfg):
 
 
 def test_grid_evaluation_and_phase_diagram_run_end_to_end():
-    from dds.eval_alloy import (compare_phase_diagram, evaluate_alloy_grid,
+    from dig_in.eval_alloy import (compare_phase_diagram, evaluate_alloy_grid,
                                 phase_diagram_from_rows)
 
     torch.manual_seed(0)

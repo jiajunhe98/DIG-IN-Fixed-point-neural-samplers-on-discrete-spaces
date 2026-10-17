@@ -3,7 +3,7 @@ amortised over (beta, h).
 
 Convention
 ----------
-Matches `dds.targets.ising.IsingModel` (Molei Tao's group's discrete-sampler repo) exactly:
+Matches `dig_in.targets.ising.IsingModel` exactly:
 
     E(s) = -J * sum_<ij> s_i s_j  -  h * sum_i s_i ,   J = 1 ,   pi(s) ~ exp(-beta E(s))
 

@@ -74,7 +74,7 @@ def train_jobs(a):
                         f"wandb.enabled={'true' if a.wandb else 'false'} {over} "
                         f"hydra.run.dir={posix(out)}")
                 done = os.path.join(out, "result.json")
-                yield done, [[sys.executable, "-m", "dds.train", *args.split()]]
+                yield done, [[sys.executable, "-m", "dig_in.train", *args.split()]]
 
 
 def sweep_jobs(a):

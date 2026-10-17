@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Retry wrapper for one training run on preemptible capacity (optional).
 #
-#     bash scripts/run_resumable.sh --out runs/lattice/ising25/ordered/digin/s0 #         target=ising25_ordered seed=0 ...      # the dds.train overrides
+#     bash scripts/run_resumable.sh --out runs/lattice/ising25/ordered/digin/s0 \
+#         target=ising25_ordered seed=0 ...      # the dig_in.train overrides
 #
 # Preemption contract, in order:
-#   1. The scheduler sends SIGTERM.  dds/train.py catches it, checkpoints at
+#   1. The scheduler sends SIGTERM.  dig_in/train.py catches it, checkpoints at
 #      the next step boundary and exits 17.
 #   2. This wrapper restarts train.py with the SAME run directory.
 #   3. train.py finds the checkpoint there and continues from that step.
@@ -84,7 +85,7 @@ for (( attempt=1; attempt<=MAX_ATTEMPTS; attempt++ )); do
   fi
   before="$(progress)"
   echo "[wrapper] attempt $attempt/$MAX_ATTEMPTS (step=$before)"
-  python -m dds.train "${ARGS[@]}" "hydra.run.dir=$OUT"
+  python -m dig_in.train "${ARGS[@]}" "hydra.run.dir=$OUT"
   rc=$?
   if [[ -f "$OUT/result.json" ]]; then
     echo "[wrapper] run finished (rc=$rc)"

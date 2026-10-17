@@ -50,7 +50,7 @@ on Ising, Potts and the alloys.
 ## Repository layout
 
 ```
-dds/                     the sampler package
+dig_in/                  the sampler package
   methods/dsi/           DIG-IN: masked interpolant, fixed-point loop, sampler
                          (also runs MDNS and PDNS, see below)
   methods/asbs/          DASBS, the discrete adjoint Schrodinger bridge sampler
@@ -81,12 +81,12 @@ model are hydra config groups:
 ```bash
 # a 4x4 Ising sanity check, about 5 minutes on a CPU: exact ln Z by
 # enumeration, so the final |log_Z_err| should be around 0.01
-python -m dds.train target=ising_small n_steps=1000 eval_every=500 \
+python -m dig_in.train target=ising_small n_steps=1000 eval_every=500 \
     model.hidden_size=32 model.n_blocks=2
 
 # DIG-IN's method settings on 25x25 Ising at the critical point (GPU); the
 # paper's step budget and evaluation come from experiments/lattice.py
-python -m dds.train target=ising25_critical method=dsi_masked_ce \
+python -m dig_in.train target=ising25_critical method=dsi_masked_ce \
     method.eta=0.1 method.weighting=tempered method.target_ess=0.8
 ```
 
@@ -177,7 +177,7 @@ canonical ensemble, one model per seed amortized over the whole
 (T, Δμ) plane, against FrOGS. The phase diagram is built by the common-tangent
 construction on the free-energy curves the model's weighted draws give, and is
 compared with the exact phase diagram of each system, which is packaged in
-`dds/targets/alloy/data/`.
+`dig_in/targets/alloy/data/`.
 
 Training takes about 6 h per DIG-IN run and 4 h per FrOGS run on an H100.
 
@@ -208,7 +208,7 @@ python scripts/make_bridge_tex_data.py             # -> results/bridge/
 
 ### Preemptible clusters
 
-`dds.train` checkpoints into its run directory (two alternating slots with a
+`dig_in.train` checkpoints into its run directory (two alternating slots with a
 checksum, so a kill during a write cannot corrupt the last good checkpoint),
 handles `SIGTERM` by checkpointing at the next step, and resumes when it is
 relaunched with the same `hydra.run.dir`. `scripts/run_resumable.sh --out
@@ -219,7 +219,7 @@ repeated attempts without progress.
 
 The alloy energies are the cluster expansions of Damewood et al.
 (npj Comput. Mater. 8, 61, 2022), packaged with their exact fixed-composition
-`ln Z_n(T)` and phase diagrams in `dds/targets/alloy/data/`. The exact
+`ln Z_n(T)` and phase diagrams in `dig_in/targets/alloy/data/`. The exact
 finite-lattice Ising free energy in `fixed_point/*/ising_theory_stable.py` is
 adapted from [DiffUCO](https://github.com/ml-jku/DiffUCO).
 

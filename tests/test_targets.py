@@ -1,11 +1,11 @@
 import pytest
 import torch
 
-from dds.targets import IsingModel, PottsModel
-from dds.targets.ising import exact as ising_exact
-from dds.targets.ising.mcmc import IsingMCMC
-from dds.targets.potts import exact as potts_exact
-from dds.targets.potts.mcmc import PottsMCMC
+from dig_in.targets import IsingModel, PottsModel
+from dig_in.targets.ising import exact as ising_exact
+from dig_in.targets.ising.mcmc import IsingMCMC
+from dig_in.targets.potts import exact as potts_exact
+from dig_in.targets.potts.mcmc import PottsMCMC
 
 
 @pytest.fixture(autouse=True)

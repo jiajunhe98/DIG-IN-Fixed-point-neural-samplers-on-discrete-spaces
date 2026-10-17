@@ -11,9 +11,9 @@ import numpy as np
 import pytest
 import torch
 
-from dds.targets import PottsModel
-from dds.targets.potts import exact as potts_exact
-from dds.targets.potts.diagnostics import (
+from dig_in.targets import PottsModel
+from dig_in.targets.potts import exact as potts_exact
+from dig_in.targets.potts.diagnostics import (
     magnetisation_angle,
     magnetisation_vector,
     mode_fractions,
@@ -21,7 +21,7 @@ from dds.targets.potts.diagnostics import (
     simplex_vertices,
     u_critical,
 )
-from dds.targets.potts.mcmc import PottsMCMC
+from dig_in.targets.potts.mcmc import PottsMCMC
 
 
 @pytest.fixture(autouse=True)
@@ -54,7 +54,7 @@ def test_magnitude_cannot_see_collapse():
 
     # relabel every configuration so that its majority state becomes 0.  This maps the
     # batch onto a single mode without touching any single configuration's statistics.
-    from dds.targets.potts.diagnostics import majority_state
+    from dig_in.targets.potts.diagnostics import majority_state
     maj = majority_state(x, q)
     perm = torch.stack([torch.roll(torch.arange(q), int(m)) for m in maj])
     collapsed = torch.gather(perm.to(x.device), 1, x)

@@ -1,5 +1,5 @@
 # Periodic residual CNN with a torus-covering receptive field (the default).
-# Ported from the fixed-point masked-diffusion sampler; see dds/models/rescnn.py.
+# Ported from the fixed-point masked-diffusion sampler; see dig_in/models/rescnn.py.
 name: rescnn
 hidden_size: 96
 n_blocks: 7

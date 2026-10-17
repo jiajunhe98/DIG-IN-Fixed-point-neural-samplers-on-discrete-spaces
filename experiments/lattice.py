@@ -11,7 +11,7 @@ ordered), three seeds, 150k gradient steps.  The paper trained every run on
 one 80 GB H100.
 
 Each run goes to runs/lattice/<task>/<phase>/<method>/s<seed>/ (ablation:
-runs/ablation/ising25/<phase>/<arm>/s<seed>/).  `dds.train` resumes from the
+runs/ablation/ising25/<phase>/<arm>/s<seed>/).  `dig_in.train` resumes from the
 checkpoint in its run directory, so an interrupted run continues when its
 command is repeated, and a finished one (result.json present) is skipped.
 Without --run the commands are printed, one per line, ready for a job array;
@@ -119,7 +119,7 @@ def jobs(a):
                     args = (f"target={prefix}_{phase} seed={seed} {common(a)} "
                             f"{method_overrides(table[name])} "
                             f"hydra.run.dir={posix(out)}")
-                    yield out, [sys.executable, "-m", "dds.train", *args.split()]
+                    yield out, [sys.executable, "-m", "dig_in.train", *args.split()]
 
 
 def main():

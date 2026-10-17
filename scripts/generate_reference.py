@@ -10,9 +10,9 @@ import argparse
 
 import torch
 
-from dds.evaluation import get_reference_samples, reference_cache_key
-from dds.targets import IsingModel, PottsModel
-from dds.utils.metrics import summarize_observables
+from dig_in.evaluation import get_reference_samples, reference_cache_key
+from dig_in.targets import IsingModel, PottsModel
+from dig_in.utils.metrics import summarize_observables
 
 
 def main():

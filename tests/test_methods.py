@@ -3,9 +3,9 @@
 import pytest
 import torch
 
-from dds.evaluation import evaluate
-from dds.methods import build_method
-from dds.targets import IsingModel, PottsModel
+from dig_in.evaluation import evaluate
+from dig_in.methods import build_method
+from dig_in.targets import IsingModel, PottsModel
 
 # the default backbone, so the smoke tests exercise what a user actually runs
 MODEL = {"name": "rescnn", "hidden_size": 16, "n_blocks": 2}
