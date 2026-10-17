@@ -1,7 +1,8 @@
 # DIG-IN: Fixed-point neural samplers on discrete spaces
 
 Code for **Fixed-point neural samplers on discrete spaces**
-([arXiv:2610.01739](https://arxiv.org/abs/2610.01739)).
+([paper](https://arxiv.org/abs/2610.01739) ·
+[project page](https://denisbless.github.io/DIG_IN_website/)).
 
 DIG-IN (Discrete Gibbs Iterative Neural sampler) learns to sample a discrete,
 unnormalized distribution `pi(x) ∝ p~(x)` on `{0, …, q-1}^D` from the energy
