@@ -146,9 +146,9 @@ with the same seeds, and ten seeds of PendulumSwingup give 837 (8 of 10 seeds
 swing the pendulum up), against 838 (9 of 10) in the paper.
 
 The other methods of Figure 4 are not part of this folder. The curves and
-final values of REPPO, PPO, SPO, TRUDI, AMDP, DPPO and FPO are those reported
-by the FFM paper, *Reinforcement Learning via Fixed-point Flow Matching*
-(Blessing, Celik and Neumann, 2026), and FFM was re-run with its own code.
+final values of REPPO, PPO, SPO, TRUDI, AMDP, DPPO, FPO and FFM are those
+reported by the FFM paper, *Reinforcement Learning via Fixed-point Flow
+Matching* (Blessing, Celik and Neumann, 2026).
 
 ## Layout
 
