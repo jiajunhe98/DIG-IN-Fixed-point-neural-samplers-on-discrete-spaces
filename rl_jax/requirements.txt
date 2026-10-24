@@ -1,0 +1,16 @@
+# The JAX / MuJoCo stack of the runs in the paper (Python 3.10-3.12, Linux,
+# CUDA 12).  On a machine without a GPU, replace jax[cuda12] by jax.
+jax[cuda12]==0.5.2
+flax==0.10.6
+optax==0.2.5
+mujoco==3.3.7
+mujoco-mjx==3.3.7
+brax==0.13.0
+# MuJoCo Playground, the fork and commit the runs used
+playground @ git+https://github.com/younggyoseo/mujoco_playground@1699a6d3d9996f2e8391791d55c2d91eccbe33ba
+ml-collections
+hydra-core>=1.3
+omegaconf
+numpy
+scipy
+pytest

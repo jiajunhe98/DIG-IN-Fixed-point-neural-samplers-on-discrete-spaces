@@ -31,6 +31,7 @@ This repository reproduces every experiment in the paper:
 | Alloy phase diagrams (Ag–Pd, Cu–Au), against FrOGS | `experiments/alloy.py` | `scripts/make_alloy_tex_data.py` |
 | Component ablation (appendix) | `experiments/lattice.py --ablation` | `scripts/make_abl_tex_data.py` |
 | Bridge between two Ising temperatures (appendix) | `experiments/bridge.py` | `scripts/make_bridge_tex_data.py` |
+| Maximum entropy RL on 20 DeepMind Control tasks (JAX) | `rl_jax/experiments/dmc.py` | `rl_jax/scripts/aggregate.py` |
 
 ## Installation
 
@@ -72,6 +73,8 @@ experiments/             one launcher per experiment, with the paper's settings
 scripts/                 scoring, reference generation, and the scripts that turn
                          runs into the paper's tables (make_*_tex_data.py)
 tests/
+rl_jax/                  DIG-IN as a policy for maximum entropy RL, in JAX, with
+                         its own requirements, launcher and README
 ```
 
 ## Quick start
@@ -205,6 +208,22 @@ python experiments/bridge.py train --run
 python experiments/bridge.py score --run
 python experiments/amortized.py groundtruth --run   # endpoint samples, if not done above
 python scripts/make_bridge_tex_data.py             # -> results/bridge/
+```
+
+### Maximum entropy reinforcement learning
+
+DIG-IN as the policy of an actor-critic method on the 20 DeepMind Control
+tasks of MuJoCo Playground, with the continuous actions discretized into bins
+and Gibbs labels from a learned critic; ten seeds per task, 55M environment
+steps each (200 runs). This experiment is written in JAX and lives in
+[`rl_jax/`](rl_jax/README.md), with its own installation, launcher and
+results script:
+
+```bash
+cd rl_jax
+pip install -r requirements.txt
+python experiments/dmc.py --run          # the 200 runs
+python scripts/aggregate.py --compare    # final returns and IQM, next to the paper's
 ```
 
 ### Preemptible clusters

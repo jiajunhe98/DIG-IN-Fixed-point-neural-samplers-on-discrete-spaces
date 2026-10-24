@@ -1,0 +1,57 @@
+# DIG-IN for maximum entropy RL on the DeepMind Control tasks of MuJoCo
+# Playground: the settings of the paper (App. E.4), identical for
+# all 20 tasks.
+#   python -m dig_in_rl.train env.name=CheetahRun seed=0
+
+env:
+  name: CheetahRun          # one of dig_in_rl.envs.TASKS
+  episode_length: 1000
+  normalize_obs: true       # running mean and variance over all environments
+
+seed: 0
+num_seeds: 1                # > 1: that many independent runs in one process (vmapped)
+
+total_steps: 55_050_240     # 420 iterations of num_envs x num_steps transitions
+num_envs: 1024
+num_steps: 128
+num_evals: 21               # every 20 iterations (2.6M steps), on num_envs episodes
+eval_stochastic: false      # also evaluate the stochastic policy (eval_stochastic/)
+
+gamma: 0.99
+lmbda: 0.95                 # TD(lambda)
+epochs: 4                   # passes over the buffer per iteration, critic and policy
+minibatches: 128            # of num_envs * num_steps / minibatches = 1024 transitions
+lr: 3e-4                    # Adam: policy, critic and dual variables
+
+policy:
+  bins: 64                  # L per action dimension
+  hidden: 512
+  layers: 3                 # Linear-LayerNorm-GELU blocks
+  head_init_scale: 1e-8     # the initial policy is uniform over the bins
+
+critic:                     # the critic of FFM
+  hidden: 512
+  encoder_layers: 2
+  head_layers: 2
+  pred_layers: 2            # auxiliary prediction of the next embedding
+  aux_weight: 1.0
+  atoms: 151                # HL-Gauss categorical on [vmin, vmax]
+  vmin: 0.0
+  vmax: 150.0
+  max_grad_norm: 0.5
+
+trust_region:               # KL(mu_old || mu_theta) along the stored orders
+  kl_bound: 0.1             # nats per action
+  kappa_start: 1.0
+
+temperature:                # tau, the dual of the entropy constraint
+  target_entropy: -0.1      # per action dimension: H* = -0.1 m
+  start: 0.01
+  min: 1e-8                 # tau = min + exp(log tau)
+  max: 1.0                  # at max, tau may only decrease
+
+hydra:
+  run:
+    dir: runs/dmc/${env.name}/s${seed}
+  job:
+    chdir: true
