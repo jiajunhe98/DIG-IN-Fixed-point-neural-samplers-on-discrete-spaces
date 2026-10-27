@@ -1,0 +1,7 @@
+torch>=2.1
+numpy
+matplotlib
+huggingface_hub   # FEAT's ALDP data (digin_bridge/data.py)
+wandb==0.28.2
+pyyaml            # cluster/submit.py
+# optional: openmm (digin_bridge/system.py builds data/, the tests compare the force field with it), pytest

@@ -1,0 +1,9 @@
+# local cluster settings and outputs (cluster/amlt.example.yaml lists the keys)
+cluster/amlt.yaml
+.amltconfig
+amlt/
+runs/
+ref/
+samples/
+paper_data/
+data/feat_aldp/

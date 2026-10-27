@@ -31,6 +31,8 @@ This repository reproduces every experiment in the paper:
 | Alloy phase diagrams (Ag–Pd, Cu–Au), against FrOGS | `experiments/alloy.py` | `scripts/make_alloy_tex_data.py` |
 | Component ablation (appendix) | `experiments/lattice.py --ablation` | `scripts/make_abl_tex_data.py` |
 | Bridge between two Ising temperatures (appendix) | `experiments/bridge.py` | `scripts/make_bridge_tex_data.py` |
+| Discretized Boltzmann generators: alanine dipeptide and tetrapeptide, internal and Cartesian coordinates | `peptides/` (`digin.train`, `digin.sample`) | `peptides/digin/paper.py` |
+| Free-energy differences of alanine dipeptide (ALDP-S, ALDP-T) with the bridge | `free_energy/` (`digin_bridge.train`) | `free_energy/digin_bridge/paper.py` |
 | Maximum entropy RL on 20 DeepMind Control tasks (JAX) | `rl_jax/experiments/dmc.py` | `rl_jax/scripts/aggregate.py` |
 
 ## Installation
@@ -73,6 +75,10 @@ experiments/             one launcher per experiment, with the paper's settings
 scripts/                 scoring, reference generation, and the scripts that turn
                          runs into the paper's tables (make_*_tex_data.py)
 tests/
+peptides/                DIG-IN as a Boltzmann generator on binned molecular
+                         coordinates (alanine peptides), with its own README
+free_energy/             the DIG-IN bridge on FEAT's alanine dipeptide free-energy
+                         tasks, with its own README
 rl_jax/                  DIG-IN as a policy for maximum entropy RL, in JAX, with
                          its own requirements, launcher and README
 ```
@@ -210,6 +216,39 @@ python experiments/amortized.py groundtruth --run   # endpoint samples, if not d
 python scripts/make_bridge_tex_data.py             # -> results/bridge/
 ```
 
+### Discretized Boltzmann generators
+
+Alanine dipeptide (D = 60) and tetrapeptide (D = 120) in implicit solvent,
+trained from the energy alone. The coordinates are binned internal coordinates
+(L = 64) or Cartesian bond vectors (L = 512); 2 systems × 2 coordinate systems
+× 3 seeds make 12 runs. A long parallel-tempering MD reference enters only the
+evaluation. The package `digin` lives in [`peptides/`](peptides/README.md),
+which has its own installation, commands and results:
+
+```bash
+cd peptides
+pip install -r requirements.txt
+python -m digin.md run --system aldp --n_temps 6 --copies 64 --max_ns 34 --out runs/md_aldp --publish ref/aldp_ref.npz
+python -m digin.train --system aldp --coords internal --seed 0 --out runs/aldp_internal_s0 --ref ref/aldp_ref.npz
+python -m digin.sample --run_dir runs/aldp_internal_s0 --out samples/aldp_internal_s0 --n 2000000
+python -m digin.paper --samples samples --ref_dir ref --out paper_data/peptides
+```
+
+### Free-energy estimation with the bridge
+
+FEAT's ALDP-S task (vacuum to implicit solvent) and ALDP-T task (between two
+conformational states), each with 3 seeds. The bridge carries MD samples of
+one state to the other state, which is given only by its energy. The package
+`digin_bridge` lives in [`free_energy/`](free_energy/README.md); FEAT's MD
+data is downloaded on first use:
+
+```bash
+cd free_energy
+pip install -r requirements.txt
+python -m digin_bridge.train --task aldps --seed 0 --out runs/aldps_s0
+python -m digin_bridge.paper --runs_root runs --out paper_data/freeenergy
+```
+
 ### Maximum entropy reinforcement learning
 
 DIG-IN as the policy of an actor-critic method on the 20 DeepMind Control
@@ -241,7 +280,12 @@ The alloy energies are the cluster expansions of Damewood et al.
 (npj Comput. Mater. 8, 61, 2022), packaged with their exact fixed-composition
 `ln Z_n(T)` and phase diagrams in `discrete_sampler/targets/alloy/data/`. The
 exact finite-lattice Ising free energy in `fixed_point/*/ising_theory_stable.py` is
-adapted from [DiffUCO](https://github.com/ml-jku/DiffUCO).
+adapted from [DiffUCO](https://github.com/ml-jku/DiffUCO). The alanine
+dipeptide MD data used by `free_energy/` is FEAT's (He et al., 2025), which is
+downloaded from the Hugging Face dataset
+[`JJHE/FEAT`](https://huggingface.co/datasets/JJHE/FEAT) on first use. Its
+amber ff96 topology, `free_energy/digin_bridge/assets/alanine-dipeptide.prmtop`,
+comes from openmmtools.
 
 ## Citation
 

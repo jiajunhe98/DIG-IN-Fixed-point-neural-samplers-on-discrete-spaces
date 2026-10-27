@@ -1,0 +1,6 @@
+torch>=2.1
+numpy
+matplotlib
+wandb==0.28.2
+pyyaml        # cluster/submit.py
+# optional: openmm (digin/systems.py builds data/, tests compare the force field with it), pytest
