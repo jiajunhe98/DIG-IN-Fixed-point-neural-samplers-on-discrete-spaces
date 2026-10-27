@@ -1,0 +1,12 @@
+# amlt cluster used by cluster/submit.py; copy to cluster/amlt.yaml (not in git) and fill in.
+target:
+  service: sing                    # Singularity
+  name: <virtual cluster>
+  workspace_name: <Azure ML workspace>
+image: amlt-sing/acpt-torch2.7.1-py3.10-cuda12.6-ubuntu22.04
+storage:                           # blob container mounted in every job
+  storage_account_name: <storage account>
+  container_name: <container>
+  mount_dir: /mnt/data
+# optional: resource id of a user-assigned managed identity for the jobs
+uai: /subscriptions/<subscription>/resourcegroups/<group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<identity>

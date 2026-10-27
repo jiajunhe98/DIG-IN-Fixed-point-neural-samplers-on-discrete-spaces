@@ -1,0 +1,8 @@
+/.git/
+/runs/
+/amlt/
+/wandb/
+/data/feat_aldp/
+__pycache__/
+.pytest_cache/
+/.vscode/

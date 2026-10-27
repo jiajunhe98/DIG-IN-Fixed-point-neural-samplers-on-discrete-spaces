@@ -1,7 +1,7 @@
 # DIG-IN for maximum entropy reinforcement learning (JAX)
 
 This folder holds the code of the reinforcement learning experiment of the
-paper (Section 5.4 and Figure 4; Appendices E.4 and F.2): DIG-IN as the
+paper (Section 5.6 and Figure 6; Appendices E.6 and F.2): DIG-IN as the
 policy of an actor-critic method on the 20 continuous control tasks of the
 DeepMind Control suite in [MuJoCo Playground](https://github.com/google-deepmind/mujoco_playground).
 It is written in JAX, with the environments simulated on the GPU by MJX, and
@@ -48,7 +48,7 @@ the critic, `π(a | s) ∝ exp(Q(s, a) / τ)`.
 | critic | `dig_in_rl/critic.py` |
 | environments | `dig_in_rl/envs.py` |
 | actor-critic loop, evaluation | `dig_in_rl/train.py` |
-| settings (App. E.4) | `configs/dmc.yaml` |
+| settings (App. E.6) | `configs/dmc.yaml` |
 
 ## Installation
 
@@ -109,7 +109,7 @@ python scripts/aggregate.py --compare   # final returns and IQM, next to the pap
 
 The launcher skips runs whose `metrics.npz` exists, so it can be repeated
 after an interruption. `scripts/aggregate.py` computes what the paper reports
-in Figure 4 and in the per-task table of App. F.2: the IQM (interquartile
+in Figure 6 and in the per-task table of App. F.2: the IQM (interquartile
 mean) of the return divided by 1000 over all runs, with a 95% interval from a
 stratified bootstrap over the seeds of each task, and the IQM over seeds of
 the final return of every task. With `--compare` it prints the runs of the
@@ -145,7 +145,7 @@ of 0.909 [0.894, 0.924], against 0.897 [0.860, 0.921] for the paper's runs
 with the same seeds, and ten seeds of PendulumSwingup give 837 (8 of 10 seeds
 swing the pendulum up), against 838 (9 of 10) in the paper.
 
-The other methods of Figure 4 are not part of this folder. The curves and
+The other methods of Figure 6 are not part of this folder. The curves and
 final values of REPPO, PPO, SPO, TRUDI, AMDP, DPPO, FPO and FFM are those
 reported by the FFM paper, *Reinforcement Learning via Fixed-point Flow
 Matching* (Blessing, Celik and Neumann, 2026).
