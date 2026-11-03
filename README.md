@@ -169,7 +169,7 @@ standalone trainers in `fixed_point/`. At the paper's batch size of 1536 the
 Ising runs need a GPU with more than 80 GB of memory.
 
 ```bash
-python experiments/amortized.py train --run        # three Ising and two Potts seeds
+python experiments/amortized.py train --run        # three seeds per system
 python experiments/amortized.py score --run        # 5000 draws at each cell of a 9x9 grid
 python experiments/amortized.py reference --run    # reference ln Z and mode distributions (CPU)
 python experiments/amortized.py groundtruth --run  # optional check, Swendsen-Wang samples (CPU)

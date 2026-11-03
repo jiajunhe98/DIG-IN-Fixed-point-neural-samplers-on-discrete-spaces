@@ -12,7 +12,9 @@ One network per seed, conditioned on (beta, h) and trained over the whole box
 below are the ones the paper's runs were trained with, read off their saved
 configs; only the number of rounds is fixed here, where the paper's runs were
 stopped by hand (Ising after 4120-4200 rounds of 100 steps, Potts after
-18713-19063) and evaluated at their last checkpoint.
+18713-19063) and evaluated at their last checkpoint.  The third Potts seed kept
+no last checkpoint, only snapshots every 800 rounds, and is evaluated at its
+snapshot at round 15200 (ckpt_015200.pt).
 
   train        -> runs/amortized/<system>-s<seed>/ (cfg.json, ckpt.pt)
   score        -> runs/amortized_scores/<system>-s<seed>/  (one .npz per cell)
@@ -50,7 +52,7 @@ SYSTEMS = {
         "keep_every=4 kernel=3 lr=0.0003 n_blocks=7 n_eval=384 n_explore=1536 "
         "n_inner=100 n_single=64 ref_chains=1024 ref_temps=24 warmup_outer=10 "
         "weight_decay=0.0")),
-    "potts24": ("fixed_point/potts_beta_h/train_hq.py", 19000, (0, 1), (
+    "potts24": ("fixed_point/potts_beta_h/train_hq.py", 19000, (0, 1, 2), (
         "L=24 acq=fisher acq_bins_b=8 acq_bins_h=12 acq_ema=0.8 acq_fisher_norm=1 "
         "acq_floor=0.05 acq_min_n=8 acq_power=0.5 adaptive=1 batch=1536 beta_hi=1.3 "
         "beta_lo=0.8 beta_range=[0.7,1.4] buffer_cap=196608 ckpt_every=10 compile=1 "
@@ -128,7 +130,7 @@ def main():
     ap.add_argument("--systems", nargs="+", default=list(SYSTEMS),
                     choices=[*SYSTEMS, *ALIAS])
     ap.add_argument("--seeds", type=int, nargs="+", default=None,
-                    help="default: the paper's (three for Ising, two for Potts)")
+                    help="default: the paper's (three per system)")
     ap.add_argument("--rounds", type=int, default=None,
                     help="train: rounds of 100 steps (default: as in the paper)")
     ap.add_argument("--root", default="runs")
